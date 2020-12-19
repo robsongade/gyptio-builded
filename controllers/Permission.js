@@ -45,6 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var Instance_1 = require("../entity/Instance");
@@ -74,9 +75,54 @@ var Permissions = [
         permissions: ['create', 'view', 'edit']
     },
 ];
+var permission_request;
+var set_request = function (request) {
+    permission_request = request;
+    return {
+        check_permission: check_permission
+    };
+};
+var check_permission = function (module, type_permission, action, OrOwner) {
+    if (action === void 0) { action = false; }
+    if (OrOwner === void 0) { OrOwner = false; }
+    return __awaiter(_this, void 0, void 0, function () {
+        var check, _a, instance, user, findInstance;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    check = global._permissions.check(module, type_permission);
+                    if (!(!check && OrOwner)) return [3 /*break*/, 2];
+                    _a = permission_request.params.storage, instance = _a.instance, user = _a.user;
+                    if (!(instance && user)) return [3 /*break*/, 2];
+                    return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).findOne({
+                            where: {
+                                instance_id: instance
+                            }
+                        })];
+                case 1:
+                    findInstance = _b.sent();
+                    if (findInstance.userId == user.id) {
+                        check = true;
+                    }
+                    _b.label = 2;
+                case 2:
+                    if (action) {
+                        if (typeof action == "function") {
+                            return [2 /*return*/, action(check)];
+                        }
+                    }
+                    console.log("asdasdasd", check);
+                    return [2 /*return*/, check];
+            }
+        });
+    });
+};
 var PermissionController = /** @class */ (function () {
     function PermissionController() {
     }
+    PermissionController.prototype.set_request = function (request) {
+        return set_request(request);
+    };
     PermissionController.prototype.group = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, storage, group_id, check, instance, instanceRepository, modules, m, mi, instance_id, id, where_group, find, group, group_item_1, find_modules, _b, _c, _i, g, _d, _e, _f, m, group_item, i, search, data_response_group;
@@ -85,13 +131,13 @@ var PermissionController = /** @class */ (function () {
                     case 0:
                         _a = request.params, storage = _a.storage, group_id = _a.group_id;
                         console.log("global._permissions:::", global._permissions);
-                        check = global._permissions.check("permission", "list", function (result) {
+                        check = set_request(request).check_permission("permission", "list", function (result) {
                             if (!result)
                                 response.status(200).json({
                                     error: "Sem permissão"
                                 });
                             return result;
-                        });
+                        }, true);
                         if (!check) {
                             console.log("Passwor aqui");
                             return [2 /*return*/];
@@ -208,7 +254,7 @@ var PermissionController = /** @class */ (function () {
             var permission;
             var _this = this;
             return __generator(this, function (_a) {
-                permission = global._permissions.check("permission", "edit", function (result) { return __awaiter(_this, void 0, void 0, function () {
+                permission = set_request(request).check_permission("permission", "edit", function (result) { return __awaiter(_this, void 0, void 0, function () {
                     var _a, storage, group_id, modules, group, name, description, instance, findInstance, groupRepository, findGroup, groupItemRepository, _b, _c, _i, m, module, _d, _e, _f, i, item, newItem, grupo_item, create;
                     return __generator(this, function (_g) {
                         switch (_g.label) {
@@ -327,7 +373,7 @@ var PermissionController = /** @class */ (function () {
                                 return [2 /*return*/];
                         }
                     });
-                }); });
+                }); }, true);
                 return [2 /*return*/];
             });
         });
@@ -336,7 +382,7 @@ var PermissionController = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                global._permissions.check("permission", "delete", function (result) { return __awaiter(_this, void 0, void 0, function () {
+                set_request(request).check_permission("permission", "delete", function (result) { return __awaiter(_this, void 0, void 0, function () {
                     var storage, group, instance, findInstance, groupRepository, findGroup, e_1;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
@@ -391,7 +437,7 @@ var PermissionController = /** @class */ (function () {
                             case 6: return [2 /*return*/];
                         }
                     });
-                }); });
+                }); }, true);
                 return [2 /*return*/];
             });
         });
@@ -400,7 +446,7 @@ var PermissionController = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                global._permissions.check("permission", "create", function (result) { return __awaiter(_this, void 0, void 0, function () {
+                set_request(request).check_permission('permission', 'create', function (result) { return __awaiter(_this, void 0, void 0, function () {
                     var storage, group, name, description, instance, findInstance, groupRepository, create, new_group;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
@@ -445,7 +491,7 @@ var PermissionController = /** @class */ (function () {
                                 return [2 /*return*/];
                         }
                     });
-                }); });
+                }); }, 'or_owner');
                 return [2 /*return*/];
             });
         });
@@ -476,7 +522,7 @@ var PermissionController = /** @class */ (function () {
                             })];
                     case 2:
                         instance_relational = _f.sent();
-                        if (instance.userId == user.id) {
+                        if (instance.userId == user.id && instance.type == 'master') {
                             return [2 /*return*/, {
                                     instance: instance,
                                     permissions: {

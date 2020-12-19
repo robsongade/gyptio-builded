@@ -15,7 +15,6 @@ var installer_1 = require("./libs/installer");
 typeorm_1.createConnection().then(function () {
     var cors = require('cors');
     var app = express_1.default();
-    console.log("v:process.env.GYPTIO_FOLDER_PUBLIC::", process.env.GYPTIO_FOLDER_PUBLIC);
     app.use('/', express_1.default.static(__dirname + (process.env.GYPTIO_FOLDER_PUBLIC || __dirname + '/../public')));
     app.use(express_1.default.static(__dirname + (process.env.GYPTIO_FOLDER_PUBLIC || "/../public")));
     app.use(cors());

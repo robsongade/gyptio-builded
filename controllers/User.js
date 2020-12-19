@@ -49,6 +49,7 @@ var InstanceEntity = Instance_1.Instance;
 var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var Group_1 = require("../entity/Group");
 var InstanceRelationGroup_1 = require("../entity/InstanceRelationGroup");
+var Permission_1 = __importDefault(require("./Permission"));
 var UserController = /** @class */ (function () {
     function UserController() {
         var _this = this;
@@ -91,10 +92,19 @@ var UserController = /** @class */ (function () {
             });
         }); };
         this.permission = function (request, response) { return __awaiter(_this, void 0, void 0, function () {
+            var owner;
+            var _this = this;
             return __generator(this, function (_a) {
-                response.status(200).json({
-                    'permissions': global._permissions
-                });
+                owner = Permission_1.default.set_request(request).check_permission('permission', 'list', function (result) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        global._permissions['owner'] = result;
+                        response.status(200).json({
+                            'permissions': global._permissions,
+                            'owner': result
+                        });
+                        return [2 /*return*/, result];
+                    });
+                }); }, true);
                 return [2 /*return*/];
             });
         }); };
@@ -134,7 +144,7 @@ var UserController = /** @class */ (function () {
             });
         }); };
         this.user = function (request, response) { return __awaiter(_this, void 0, void 0, function () {
-            var instance, user_id_instance, user, findUserInstance, user, findUser, findInstance, findInstanceRelational, all_groups, items_groups, groups;
+            var instance, user_id_instance, user, findUserInstance, user, findUser, groups, findInstance, findInstanceRelational, all_groups, items_groups;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -157,6 +167,8 @@ var UserController = /** @class */ (function () {
                     case 4: return [4 /*yield*/, typeorm_1.getRepository(UserEntity).findOne(user.id)];
                     case 5:
                         findUser = _a.sent();
+                        groups = [];
+                        if (!instance) return [3 /*break*/, 10];
                         return [4 /*yield*/, typeorm_1.getRepository(InstanceEntity).findOne({
                                 where: {
                                     instance_id: instance
@@ -191,6 +203,8 @@ var UserController = /** @class */ (function () {
                                 return item.groupId == group.id;
                             });
                         });
+                        _a.label = 10;
+                    case 10:
                         findUser.groups = groups;
                         findUser.password = "";
                         response.send({ user: findUser, groups: all_groups });
@@ -199,94 +213,106 @@ var UserController = /** @class */ (function () {
             });
         }); };
         this.edit_instance = function (request, response) { return __awaiter(_this, void 0, void 0, function () {
-            var instance, _a, edit_groups, user, user_id_instance, newData, findInstance, findInstanceRelational, _b, _c, _i, g, group, findGroup, action, findItem;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
-                    case 0:
-                        instance = request.params.storage.instance;
-                        _a = request.body, edit_groups = _a.edit_groups, user = _a.user, user_id_instance = _a.user_id_instance;
-                        newData = {};
-                        return [4 /*yield*/, typeorm_1.getRepository(InstanceEntity).findOne({
-                                where: {
-                                    instance_id: instance
+            var instance, _a, edit_groups, user_id_instance;
+            var _this = this;
+            return __generator(this, function (_b) {
+                instance = request.params.storage.instance;
+                _a = request.body, edit_groups = _a.edit_groups, user_id_instance = _a.user_id_instance;
+                Permission_1.default.set_request(request).check_permission('user', 'edit', function (result) { return __awaiter(_this, void 0, void 0, function () {
+                    var findInstance, findInstanceRelational, _a, _b, _i, g, group, findGroup, action, findItem;
+                    return __generator(this, function (_c) {
+                        switch (_c.label) {
+                            case 0:
+                                if (!result) {
+                                    response.json({
+                                        error: "Sem permissão"
+                                    });
+                                    return [2 /*return*/, result];
                                 }
-                            })];
-                    case 1:
-                        findInstance = _d.sent();
-                        return [4 /*yield*/, typeorm_1.getRepository(InstanceRelation_1.InstanceRelation).findOne({
-                                where: {
-                                    user_id_instance: user_id_instance,
-                                    instance: findInstance
-                                }
-                            })];
-                    case 2:
-                        findInstanceRelational = _d.sent();
-                        if (!edit_groups) return [3 /*break*/, 14];
-                        _b = [];
-                        for (_c in edit_groups)
-                            _b.push(_c);
-                        _i = 0;
-                        _d.label = 3;
-                    case 3:
-                        if (!(_i < _b.length)) return [3 /*break*/, 14];
-                        g = _b[_i];
-                        group = edit_groups[g];
-                        return [4 /*yield*/, typeorm_1.getRepository(Group_1.Group).findOne({
-                                where: {
-                                    instance: findInstanceRelational.instanceId,
-                                    id: group.id
-                                }
-                            })];
-                    case 4:
-                        findGroup = _d.sent();
-                        action = group.delete ? 'delete' : 'add';
-                        return [4 /*yield*/, typeorm_1.getRepository(InstanceRelationGroup_1.InstanceRelationGroup).findOne({
-                                where: {
+                                return [4 /*yield*/, typeorm_1.getRepository(InstanceEntity).findOne({
+                                        where: {
+                                            instance_id: instance
+                                        }
+                                    })];
+                            case 1:
+                                findInstance = _c.sent();
+                                return [4 /*yield*/, typeorm_1.getRepository(InstanceRelation_1.InstanceRelation).findOne({
+                                        where: {
+                                            user_id_instance: user_id_instance,
+                                            instance: findInstance
+                                        }
+                                    })];
+                            case 2:
+                                findInstanceRelational = _c.sent();
+                                if (!edit_groups) return [3 /*break*/, 14];
+                                _a = [];
+                                for (_b in edit_groups)
+                                    _a.push(_b);
+                                _i = 0;
+                                _c.label = 3;
+                            case 3:
+                                if (!(_i < _a.length)) return [3 /*break*/, 14];
+                                g = _a[_i];
+                                group = edit_groups[g];
+                                return [4 /*yield*/, typeorm_1.getRepository(Group_1.Group).findOne({
+                                        where: {
+                                            instance: findInstanceRelational.instanceId,
+                                            id: group.id
+                                        }
+                                    })];
+                            case 4:
+                                findGroup = _c.sent();
+                                action = group.delete ? 'delete' : 'add';
+                                return [4 /*yield*/, typeorm_1.getRepository(InstanceRelationGroup_1.InstanceRelationGroup).findOne({
+                                        where: {
+                                            group: findGroup,
+                                            instanceRelation: findInstanceRelational
+                                        }
+                                    })];
+                            case 5:
+                                findItem = _c.sent();
+                                if (!findItem) return [3 /*break*/, 10];
+                                console.log("DELETE:::", findItem);
+                                if (!(action == 'delete')) return [3 /*break*/, 7];
+                                console.log("DELETE2:::", findItem);
+                                return [4 /*yield*/, typeorm_1.getRepository(InstanceRelationGroup_1.InstanceRelationGroup).delete(findItem.id)];
+                            case 6:
+                                _c.sent();
+                                return [3 /*break*/, 9];
+                            case 7: return [4 /*yield*/, typeorm_1.getRepository(InstanceRelationGroup_1.InstanceRelationGroup).update(findItem.id, {
                                     group: findGroup,
                                     instanceRelation: findInstanceRelational
-                                }
-                            })];
-                    case 5:
-                        findItem = _d.sent();
-                        if (!findItem) return [3 /*break*/, 10];
-                        console.log("DELETE:::", findItem);
-                        if (!(action == 'delete')) return [3 /*break*/, 7];
-                        console.log("DELETE2:::", findItem);
-                        return [4 /*yield*/, typeorm_1.getRepository(InstanceRelationGroup_1.InstanceRelationGroup).delete(findItem.id)];
-                    case 6:
-                        _d.sent();
-                        return [3 /*break*/, 9];
-                    case 7: return [4 /*yield*/, typeorm_1.getRepository(InstanceRelationGroup_1.InstanceRelationGroup).update(findItem.id, {
-                            group: findGroup,
-                            instanceRelation: findInstanceRelational
-                        })];
-                    case 8:
-                        _d.sent();
-                        _d.label = 9;
-                    case 9: return [3 /*break*/, 12];
-                    case 10:
-                        console.log("ADDDfindGroup:::", findGroup, findInstanceRelational, group);
-                        return [4 /*yield*/, typeorm_1.getRepository(InstanceRelationGroup_1.InstanceRelationGroup).save({
-                                group: findGroup,
-                                instanceRelation: findInstanceRelational
-                            })];
-                    case 11:
-                        _d.sent();
-                        _d.label = 12;
-                    case 12:
-                        console.log('findItem:::', findItem);
-                        _d.label = 13;
-                    case 13:
-                        _i++;
-                        return [3 /*break*/, 3];
-                    case 14:
-                        // console.log(editUser);
-                        // console.log("editUser:::",editUser,newData)
-                        // const edit = await getRepository(UserEntity).update(user.id,newData)
-                        // var newUser = await getRepository(UserEntity).findOne(user.id)
-                        response.status(200).send({ success: findInstanceRelational });
-                        return [2 /*return*/];
-                }
+                                })];
+                            case 8:
+                                _c.sent();
+                                _c.label = 9;
+                            case 9: return [3 /*break*/, 12];
+                            case 10:
+                                console.log("ADDDfindGroup:::", findGroup, findInstanceRelational, group);
+                                return [4 /*yield*/, typeorm_1.getRepository(InstanceRelationGroup_1.InstanceRelationGroup).save({
+                                        group: findGroup,
+                                        instanceRelation: findInstanceRelational
+                                    })];
+                            case 11:
+                                _c.sent();
+                                _c.label = 12;
+                            case 12:
+                                console.log('findItem:::', findItem);
+                                _c.label = 13;
+                            case 13:
+                                _i++;
+                                return [3 /*break*/, 3];
+                            case 14:
+                                // console.log(editUser);
+                                // console.log("editUser:::",editUser,newData)
+                                // const edit = await getRepository(UserEntity).update(user.id,newData)
+                                // var newUser = await getRepository(UserEntity).findOne(user.id)
+                                response.status(200).send({ success: findInstanceRelational });
+                                return [2 /*return*/];
+                        }
+                    });
+                }); }, true);
+                return [2 /*return*/];
             });
         }); };
         this.edit = function (request, response) { return __awaiter(_this, void 0, void 0, function () {
@@ -325,83 +351,87 @@ var UserController = /** @class */ (function () {
             });
         }); };
         this.users = function (request, response) { return __awaiter(_this, void 0, void 0, function () {
-            var instance, user, user_id, UserRepository, InstanceUserRepository, InstanceRepository, permission, Instance, _a, _b, _c, instance_user, instance_user_aproves, instance_user_to_accept, users;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
-                    case 0:
-                        instance = request.params.storage.instance;
-                        user = request.params.storage.user;
-                        user_id = user.id;
-                        UserRepository = typeorm_1.getRepository(UserEntity);
-                        InstanceUserRepository = typeorm_1.getRepository(InstanceRelation_1.InstanceRelation);
-                        InstanceRepository = typeorm_1.getRepository(InstanceEntity);
-                        permission = global._permissions.check("user", "list");
-                        return [4 /*yield*/, InstanceRepository.findOne({
-                                where: {
-                                    instance_id: instance
-                                }
-                            })];
-                    case 1:
-                        Instance = _d.sent();
-                        if (!!permission) return [3 /*break*/, 3];
-                        _b = (_a = response.status(200)).json;
-                        _c = {};
-                        return [4 /*yield*/, InstanceUserRepository.find({
-                                where: {
-                                    user: user_id,
-                                    instance: Instance
-                                },
-                                relations: ["user"]
-                            })];
-                    case 2:
-                        _b.apply(_a, [(_c.instance_user = _d.sent(),
-                                _c)]);
-                        return [2 /*return*/];
-                    case 3: return [4 /*yield*/, InstanceUserRepository.find({
-                            where: {
-                                instance: Instance,
-                                status: InstanceRelation_1.InstanceRelationalStatus.ACTIVED
-                            },
-                            relations: ["user"]
-                        })];
-                    case 4:
-                        instance_user = _d.sent();
-                        return [4 /*yield*/, InstanceUserRepository.find({
-                                where: {
-                                    instance: Instance,
-                                    status: InstanceRelation_1.InstanceRelationalStatus.AWAITING_APPROVED
-                                },
-                                relations: ["user"]
-                            })];
-                    case 5:
-                        instance_user_aproves = _d.sent();
-                        return [4 /*yield*/, InstanceUserRepository.find({
-                                where: {
-                                    instance: Instance,
-                                    status: InstanceRelation_1.InstanceRelationalStatus.AWAITING_ACCEPT
-                                },
-                                relations: ["user"]
-                            })];
-                    case 6:
-                        instance_user_to_accept = _d.sent();
-                        return [4 /*yield*/, InstanceUserRepository.find({
-                                where: {
-                                    instance: Instance,
-                                }
-                            })
-                            // const users_aproves = await UserRepository.findByIds(instance_user_aproves)
-                            //  const users_to_accept = await UserRepository.findByIds(instance_user_to_accept)
-                        ];
-                    case 7:
-                        users = _d.sent();
-                        // const users_aproves = await UserRepository.findByIds(instance_user_aproves)
-                        //  const users_to_accept = await UserRepository.findByIds(instance_user_to_accept)
-                        response.status(200).json({
-                            users: users, instance_user_aproves: instance_user_aproves, instance_user_to_accept: instance_user_to_accept, instance_user: instance_user, instance: instance, instance_id: request.params.storage, Instance: Instance,
-                            permission: global._permissions,
-                        });
-                        return [2 /*return*/];
-                }
+            var instance, user, user_id, UserRepository, InstanceUserRepository, InstanceRepository;
+            var _this = this;
+            return __generator(this, function (_a) {
+                instance = request.params.storage.instance;
+                user = request.params.storage.user;
+                user_id = user.id;
+                UserRepository = typeorm_1.getRepository(UserEntity);
+                InstanceUserRepository = typeorm_1.getRepository(InstanceRelation_1.InstanceRelation);
+                InstanceRepository = typeorm_1.getRepository(InstanceEntity);
+                Permission_1.default.set_request(request).check_permission("user", "list", function (result) { return __awaiter(_this, void 0, void 0, function () {
+                    var Instance, _a, _b, _c, instance_user, instance_user_aproves, instance_user_to_accept, users;
+                    return __generator(this, function (_d) {
+                        switch (_d.label) {
+                            case 0: return [4 /*yield*/, InstanceRepository.findOne({
+                                    where: {
+                                        instance_id: instance
+                                    }
+                                })];
+                            case 1:
+                                Instance = _d.sent();
+                                if (!!result) return [3 /*break*/, 3];
+                                _b = (_a = response.status(200)).json;
+                                _c = {};
+                                return [4 /*yield*/, InstanceUserRepository.find({
+                                        where: {
+                                            user: user_id,
+                                            instance: Instance
+                                        },
+                                        relations: ["user"]
+                                    })];
+                            case 2:
+                                _b.apply(_a, [(_c.instance_user = _d.sent(),
+                                        _c)]);
+                                return [2 /*return*/];
+                            case 3: return [4 /*yield*/, InstanceUserRepository.find({
+                                    where: {
+                                        instance: Instance,
+                                        status: InstanceRelation_1.InstanceRelationalStatus.ACTIVED
+                                    },
+                                    relations: ["user"]
+                                })];
+                            case 4:
+                                instance_user = _d.sent();
+                                return [4 /*yield*/, InstanceUserRepository.find({
+                                        where: {
+                                            instance: Instance,
+                                            status: InstanceRelation_1.InstanceRelationalStatus.AWAITING_APPROVED
+                                        },
+                                        relations: ["user"]
+                                    })];
+                            case 5:
+                                instance_user_aproves = _d.sent();
+                                return [4 /*yield*/, InstanceUserRepository.find({
+                                        where: {
+                                            instance: Instance,
+                                            status: InstanceRelation_1.InstanceRelationalStatus.AWAITING_ACCEPT
+                                        },
+                                        relations: ["user"]
+                                    })];
+                            case 6:
+                                instance_user_to_accept = _d.sent();
+                                return [4 /*yield*/, InstanceUserRepository.find({
+                                        where: {
+                                            instance: Instance,
+                                        }
+                                    })
+                                    // const users_aproves = await UserRepository.findByIds(instance_user_aproves)
+                                    //  const users_to_accept = await UserRepository.findByIds(instance_user_to_accept)
+                                ];
+                            case 7:
+                                users = _d.sent();
+                                // const users_aproves = await UserRepository.findByIds(instance_user_aproves)
+                                //  const users_to_accept = await UserRepository.findByIds(instance_user_to_accept)
+                                response.status(200).json({
+                                    users: users, instance_user_aproves: instance_user_aproves, instance_user_to_accept: instance_user_to_accept, instance_user: instance_user, instance: instance, instance_id: request.params.storage, Instance: Instance
+                                });
+                                return [2 /*return*/];
+                        }
+                    });
+                }); }, true);
+                return [2 /*return*/];
             });
         }); };
     }
