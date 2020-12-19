@@ -6,3 +6,4 @@ temp/
 .env
 package-*.json
 yarn-*.json
+**/**.map
