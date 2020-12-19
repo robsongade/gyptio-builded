@@ -89,7 +89,7 @@ exports.default = {
                             return [2 /*return*/, false];
                         id = instance_user.id;
                         return [4 /*yield*/, pinRepository.update(id, {
-                                status: 10
+                                status: InstanceRelation_1.InstanceRelationalStatus.ACTIVED
                             })];
                     case 2: return [2 /*return*/, _a.sent()];
                 }
@@ -114,7 +114,7 @@ exports.default = {
                             return [2 /*return*/, false];
                         id = instance_user.id;
                         return [4 /*yield*/, pinRepository.update(id, {
-                                status: 0
+                                status: InstanceRelation_1.InstanceRelationalStatus.PENDING
                             })];
                     case 2: return [2 /*return*/, _a.sent()];
                 }

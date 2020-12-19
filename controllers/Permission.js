@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -66,24 +77,119 @@ var Permissions = [
 var PermissionController = /** @class */ (function () {
     function PermissionController() {
     }
-    PermissionController.prototype.instance = function (instance_id, just_enable) {
+    PermissionController.prototype.group = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var data;
-            return __generator(this, function (_a) {
-                data = [];
-                console.log(instance_id);
-                try {
-                    data = require("./../../data/permission/" + instance_id + ".ts")['default'];
-                    if (just_enable) {
-                        data = data.filter(function (item) {
-                            return item.enable;
+            var _a, storage, group_id, check, instance, instanceRepository, modules, m, mi, instance_id, id, where_group, find, group, group_item_1, find_modules, _b, _c, _i, g, _d, _e, _f, m, group_item, i, search, data_response_group;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
+                    case 0:
+                        _a = request.params, storage = _a.storage, group_id = _a.group_id;
+                        console.log("global._permissions:::", global._permissions);
+                        check = global._permissions.check("permission", "list", function (result) {
+                            if (!result)
+                                response.status(200).json({
+                                    error: "Sem permissão"
+                                });
+                            return result;
                         });
-                    }
+                        if (!check) {
+                            console.log("Passwor aqui");
+                            return [2 /*return*/];
+                        }
+                        instance = storage.instance;
+                        return [4 /*yield*/, typeorm_1.getRepository(InstanceEntity).findOne({
+                                where: {
+                                    instance_id: instance
+                                },
+                            })];
+                    case 1:
+                        instanceRepository = _g.sent();
+                        return [4 /*yield*/, typeorm_1.getRepository(ModuleEntity).find()];
+                    case 2:
+                        modules = _g.sent();
+                        for (m in modules) {
+                            modules[m].permissions = [];
+                            for (mi in GroupPermissionItem_1.ModuleItem) {
+                                modules[m].permissions.push({
+                                    item: GroupPermissionItem_1.ModuleItem[mi]
+                                });
+                            }
+                        }
+                        instance_id = instanceRepository.id;
+                        id = group_id;
+                        where_group = id ? {
+                            instance: instance_id,
+                            id: id
+                        } : {
+                            instance: instance_id,
+                        };
+                        find = !id ? 'find' : 'findOne';
+                        return [4 /*yield*/, typeorm_1.getRepository(Group_1.Group)[find]({
+                                where: where_group,
+                                relations: ["groups_permission_item"]
+                            })];
+                    case 3:
+                        group = _g.sent();
+                        if (!id) return [3 /*break*/, 5];
+                        return [4 /*yield*/, typeorm_1.getRepository(GroupPermissionItem_1.GroupPermissionItem)['find']({
+                                where: {
+                                    group: group_id
+                                }
+                            })];
+                    case 4:
+                        group_item_1 = _g.sent();
+                        group.groups_permission_item = group_item_1;
+                        return [3 /*break*/, 12];
+                    case 5:
+                        _b = [];
+                        for (_c in group)
+                            _b.push(_c);
+                        _i = 0;
+                        _g.label = 6;
+                    case 6:
+                        if (!(_i < _b.length)) return [3 /*break*/, 12];
+                        g = _b[_i];
+                        group[g].groups_permission_item = [];
+                        return [4 /*yield*/, typeorm_1.getRepository(Module_1.Module).find()];
+                    case 7:
+                        find_modules = _g.sent();
+                        _d = [];
+                        for (_e in find_modules)
+                            _d.push(_e);
+                        _f = 0;
+                        _g.label = 8;
+                    case 8:
+                        if (!(_f < _d.length)) return [3 /*break*/, 11];
+                        m = _d[_f];
+                        module = find_modules[m];
+                        return [4 /*yield*/, typeorm_1.getRepository(GroupPermissionItem_1.GroupPermissionItem)['find']({
+                                where: {
+                                    group: group[g].id,
+                                    module: module
+                                }
+                            })];
+                    case 9:
+                        group_item = _g.sent();
+                        for (i in group_item) {
+                            search = group[g].groups_permission_item.find(function (check) { return check.id == group_item[i].id; });
+                            if (!search)
+                                group[g].groups_permission_item.push(group_item[i]);
+                        }
+                        console.log("group:::", group[g]);
+                        _g.label = 10;
+                    case 10:
+                        _f++;
+                        return [3 /*break*/, 8];
+                    case 11:
+                        _i++;
+                        return [3 /*break*/, 6];
+                    case 12:
+                        data_response_group = !id ? {
+                            groups: group
+                        } : { group: group };
+                        response.status(200).json(__assign({}, data_response_group, { modules: modules }));
+                        return [2 /*return*/];
                 }
-                catch (e) {
-                    data = [];
-                }
-                return [2 /*return*/, data];
             });
         });
     };
@@ -97,9 +203,256 @@ var PermissionController = /** @class */ (function () {
             });
         });
     };
+    PermissionController.prototype.group_edit = function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            var permission;
+            var _this = this;
+            return __generator(this, function (_a) {
+                permission = global._permissions.check("permission", "edit", function (result) { return __awaiter(_this, void 0, void 0, function () {
+                    var _a, storage, group_id, modules, group, name, description, instance, findInstance, groupRepository, findGroup, groupItemRepository, _b, _c, _i, m, module, _d, _e, _f, i, item, newItem, grupo_item, create;
+                    return __generator(this, function (_g) {
+                        switch (_g.label) {
+                            case 0:
+                                if (!result) {
+                                    response.json({
+                                        error: "Sem permissão"
+                                    });
+                                    return [2 /*return*/, result];
+                                }
+                                _a = request.params, storage = _a.storage, group_id = _a.group_id;
+                                modules = request.body.modules;
+                                group = request.body.group;
+                                name = group.name, description = group.description;
+                                instance = storage.instance;
+                                if (!name) {
+                                    response.json({
+                                        error: "Insira um nome para o grupo"
+                                    });
+                                    return [2 /*return*/];
+                                }
+                                return [4 /*yield*/, typeorm_1.getRepository(InstanceEntity).findOne({
+                                        where: {
+                                            instance_id: instance
+                                        }
+                                    })];
+                            case 1:
+                                findInstance = _g.sent();
+                                groupRepository = typeorm_1.getRepository(Group_1.Group);
+                                return [4 /*yield*/, groupRepository.findOne({
+                                        instance: findInstance,
+                                        id: group_id
+                                    })];
+                            case 2:
+                                findGroup = _g.sent();
+                                if (!findGroup) {
+                                    response.json({
+                                        error: "Sem permissão"
+                                    });
+                                    return [2 /*return*/];
+                                }
+                                return [4 /*yield*/, groupRepository.update(findGroup.id, {
+                                        name: name, description: description
+                                    })];
+                            case 3:
+                                _g.sent();
+                                groupItemRepository = typeorm_1.getRepository(GroupPermissionItem_1.GroupPermissionItem);
+                                _b = [];
+                                for (_c in modules)
+                                    _b.push(_c);
+                                _i = 0;
+                                _g.label = 4;
+                            case 4:
+                                if (!(_i < _b.length)) return [3 /*break*/, 15];
+                                m = _b[_i];
+                                module = modules[m];
+                                _d = [];
+                                for (_e in module.items)
+                                    _d.push(_e);
+                                _f = 0;
+                                _g.label = 5;
+                            case 5:
+                                if (!(_f < _d.length)) return [3 /*break*/, 14];
+                                i = _d[_f];
+                                item = module.items[i];
+                                console.log(item);
+                                if (!item.checked) return [3 /*break*/, 11];
+                                newItem = {
+                                    name: module.name + ":" + item.role,
+                                    description: "",
+                                    roles: item.role,
+                                    group: group_id,
+                                    module: module.id
+                                };
+                                return [4 /*yield*/, groupItemRepository.findOne({
+                                        where: {
+                                            group: group_id,
+                                            module: module.id,
+                                            roles: item.role
+                                        }
+                                    })];
+                            case 6:
+                                grupo_item = _g.sent();
+                                if (!!grupo_item) return [3 /*break*/, 8];
+                                console.log("Cirar:::", grupo_item);
+                                return [4 /*yield*/, groupItemRepository.create(newItem)];
+                            case 7:
+                                create = _g.sent();
+                                create.save();
+                                return [3 /*break*/, 10];
+                            case 8:
+                                console.log("Update:::", grupo_item);
+                                return [4 /*yield*/, groupItemRepository.update(grupo_item.id, newItem)];
+                            case 9:
+                                _g.sent();
+                                _g.label = 10;
+                            case 10: return [3 /*break*/, 13];
+                            case 11: return [4 /*yield*/, groupItemRepository.delete({
+                                    group: group_id,
+                                    module: module.id,
+                                    roles: item.role
+                                })];
+                            case 12:
+                                _g.sent();
+                                _g.label = 13;
+                            case 13:
+                                _f++;
+                                return [3 /*break*/, 5];
+                            case 14:
+                                _i++;
+                                return [3 /*break*/, 4];
+                            case 15:
+                                response.status(200).json({
+                                    success: true
+                                });
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+                return [2 /*return*/];
+            });
+        });
+    };
+    PermissionController.prototype.delete_group = function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                global._permissions.check("permission", "delete", function (result) { return __awaiter(_this, void 0, void 0, function () {
+                    var storage, group, instance, findInstance, groupRepository, findGroup, e_1;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                if (!result) {
+                                    response.json({
+                                        error: "Sem permissão"
+                                    });
+                                    return [2 /*return*/, result];
+                                }
+                                storage = request.params.storage;
+                                group = request.body.group;
+                                instance = storage.instance;
+                                return [4 /*yield*/, typeorm_1.getRepository(InstanceEntity).findOne({
+                                        where: {
+                                            instance_id: instance
+                                        }
+                                    })];
+                            case 1:
+                                findInstance = _a.sent();
+                                groupRepository = typeorm_1.getRepository(Group_1.Group);
+                                return [4 /*yield*/, groupRepository.findOne({
+                                        instance: findInstance,
+                                        id: group.id
+                                    })];
+                            case 2:
+                                findGroup = _a.sent();
+                                if (!findGroup) {
+                                    response.json({
+                                        error: "Sem permissão"
+                                    });
+                                    return [2 /*return*/];
+                                }
+                                _a.label = 3;
+                            case 3:
+                                _a.trys.push([3, 5, , 6]);
+                                return [4 /*yield*/, groupRepository.delete(findGroup.id)];
+                            case 4:
+                                _a.sent();
+                                response.json({
+                                    success: true
+                                });
+                                return [3 /*break*/, 6];
+                            case 5:
+                                e_1 = _a.sent();
+                                response.json({
+                                    error: {
+                                        message: e_1.detail
+                                    }
+                                });
+                                return [3 /*break*/, 6];
+                            case 6: return [2 /*return*/];
+                        }
+                    });
+                }); });
+                return [2 /*return*/];
+            });
+        });
+    };
+    PermissionController.prototype.group_add = function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                global._permissions.check("permission", "create", function (result) { return __awaiter(_this, void 0, void 0, function () {
+                    var storage, group, name, description, instance, findInstance, groupRepository, create, new_group;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                if (!result) {
+                                    response.json({
+                                        error: "Sem permissão"
+                                    });
+                                    return [2 /*return*/, result];
+                                }
+                                storage = request.params.storage;
+                                group = request.body.group;
+                                name = group.name, description = group.description;
+                                instance = storage.instance;
+                                if (!name) {
+                                    response.json({
+                                        error: "Insira um nome para o grupo"
+                                    });
+                                    return [2 /*return*/];
+                                }
+                                return [4 /*yield*/, typeorm_1.getRepository(InstanceEntity).findOne({
+                                        where: {
+                                            instance_id: instance
+                                        }
+                                    })];
+                            case 1:
+                                findInstance = _a.sent();
+                                groupRepository = typeorm_1.getRepository(Group_1.Group);
+                                return [4 /*yield*/, groupRepository.create({
+                                        instance: findInstance,
+                                        name: name, description: description
+                                    })];
+                            case 2:
+                                create = _a.sent();
+                                return [4 /*yield*/, create.save()];
+                            case 3:
+                                new_group = _a.sent();
+                                response.status(200).json({
+                                    success: true,
+                                    group: new_group
+                                });
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+                return [2 /*return*/];
+            });
+        });
+    };
     PermissionController.prototype.permission_instance_user = function (instance_id, user) {
         return __awaiter(this, void 0, void 0, function () {
-            var instanceRepository, instanceRelationalRepository, instance, instance_relational, InstanceRelationGroup, groups_relations, groups_relations, groupsRepository, groups, permissions, modules, _a, _b, _i, g, group, groupPermissionItemsRepository, group_items, _c, _d, _e, i, item, moduleRepository, module;
+            var instanceRepository, instanceRelationalRepository, instance, instance_relational, InstanceRelationGroup, groups_relations, groups_relations, ids, x, groupsRepository, groups, permissions, modules, _a, _b, _i, g, group, groupPermissionItemsRepository, group_items, _c, _d, _e, i, item, moduleRepository, module;
             return __generator(this, function (_f) {
                 switch (_f.label) {
                     case 0:
@@ -123,25 +476,40 @@ var PermissionController = /** @class */ (function () {
                             })];
                     case 2:
                         instance_relational = _f.sent();
-                        console.log("instance:::", instance_relational);
+                        if (instance.userId == user.id) {
+                            return [2 /*return*/, {
+                                    instance: instance,
+                                    permissions: {
+                                        master: 'master'
+                                    }
+                                }];
+                        }
+                        console.log("instance:::", instance, user, instance_relational);
                         InstanceRelationGroup = typeorm_1.getRepository(InstanceRelationGroupEntity);
                         return [4 /*yield*/, InstanceRelationGroup.find({
                                 where: {
-                                    instanceRelation: instance
+                                    instanceRelation: instance_relational
                                 },
                                 relations: ["instanceRelation"]
                             })];
                     case 3:
                         groups_relations = _f.sent();
+                        console.log("groups_relations:::", groups_relations);
                         groups_relations = groups_relations.filter(function (group) {
                             console.log("check:::", group.instanceRelation, instance_relational, group.instanceRelation.user_id_instance == instance_relational.user_id_instance);
                             if (group.instanceRelation.user_id_instance == instance_relational.user_id_instance) {
                                 return true;
                             }
                         });
-                        console.log("grops_relations:::", groups_relations);
+                        console.log("grops_relations2:::", groups_relations);
+                        ids = [];
+                        for (x in groups_relations) {
+                            ids.push({
+                                id: groups_relations[x].groupId
+                            });
+                        }
                         groupsRepository = typeorm_1.getRepository(GroupEntity);
-                        return [4 /*yield*/, groupsRepository.findByIds(groups_relations)];
+                        return [4 /*yield*/, groupsRepository.findByIds(ids)];
                     case 4:
                         groups = _f.sent();
                         console.log("groups:::", groups);
@@ -191,12 +559,10 @@ var PermissionController = /** @class */ (function () {
                     case 11:
                         _i++;
                         return [3 /*break*/, 5];
-                    case 12:
-                        console.log('global:::', modules);
-                        return [2 /*return*/, {
-                                instance: instance,
-                                permissions: modules
-                            }];
+                    case 12: return [2 /*return*/, {
+                            instance: instance,
+                            permissions: modules
+                        }];
                 }
             });
         });

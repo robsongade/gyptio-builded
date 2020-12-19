@@ -139,9 +139,11 @@ exports.default = {
                                             } });
                                         return [2 /*return*/];
                                     }
+                                    console.log("1bpermissions:::", instance);
                                     return [4 /*yield*/, Permission_1.default.permission_instance_user(instance, decoded.user)];
                                 case 1:
                                     permissions = _a.sent();
+                                    console.log("1permissions:::", permissions);
                                     if (!permissions.instance) {
                                         res.status(201).json({ auth: false, decoded: decoded, error: {
                                                 message: 'Essa opção esta desabilitada ou você não faz parte do grupo de acesso!!!'
@@ -151,6 +153,7 @@ exports.default = {
                                     else {
                                         for (i in permissions.permissions) {
                                             module = permissions.permissions[i];
+                                            console.log(module);
                                             if (permissions.permissions[module]) {
                                                 console.log("add_permissions:::", permissions.permissions[module]);
                                                 if (!global._permissions[module]) {

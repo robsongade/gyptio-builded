@@ -66,7 +66,9 @@ exports.default = {
                             })];
                     case 1:
                         instances_relational = _a.sent();
-                        res.status(201).json({ instances: instances_relational });
+                        res.status(201).json({
+                            instances: instances_relational
+                        });
                         return [3 /*break*/, 3];
                     case 2:
                         e_1 = _a.sent();
@@ -96,7 +98,7 @@ exports.default = {
                             })];
                     case 1:
                         instances_relational = _a.sent();
-                        instances_relational = instances_relational.filter(function (instance) { return instance.status == 10; });
+                        instances_relational = instances_relational.filter(function (instance) { return instance.status == 'user_instance_actived'; });
                         console.log("storage:::", req.params.storage);
                         console.log("LISENSE:::", process.env.LICENSE);
                         res.status(201).json({ all_instances: instances_relational });
@@ -123,7 +125,7 @@ exports.default = {
                         data = {
                             name: name,
                             user: user,
-                            status: 1
+                            status: Instance_1.InstanceStatus.PENDING
                         };
                         new_instance = instanceRepository.create(data);
                         return [4 /*yield*/, instanceRepository.save(new_instance)];
@@ -132,7 +134,7 @@ exports.default = {
                         _instanceRelation = {
                             instance: instance,
                             user: user,
-                            status: 10
+                            status: InstanceRelation_1.InstanceRelationalStatus.ACTIVED
                         };
                         return [4 /*yield*/, InstanceRelational_1.default.pin(_instanceRelation)];
                     case 2:
@@ -190,10 +192,10 @@ exports.default = {
                             if (license && license != "") {
                                 if (instance.type == "master") {
                                     if (license == process.env.LICENSE) {
-                                        data.status = 10;
+                                        data.status = Instance_1.InstanceStatus.ACTIVED;
                                     }
                                     else {
-                                        data.status = 0;
+                                        data.status = Instance_1.InstanceStatus.PENDING;
                                     }
                                 }
                             }
@@ -227,7 +229,7 @@ exports.default = {
                         _instanceRelation = {
                             instance: instance,
                             user: user,
-                            status: 1
+                            status: InstanceRelation_1.InstanceRelationalStatus.AWAITING_APPROVED
                         };
                         return [4 /*yield*/, InstanceRelational_1.default.pin(_instanceRelation)];
                     case 2:
@@ -246,6 +248,7 @@ exports.default = {
                     case 0:
                         user = req.params.storage.user;
                         user_id_instance = req.params.user_id_instance;
+                        console.log("user_relational:::", user_id_instance);
                         return [4 /*yield*/, InstanceRelation_1.InstanceRelation.findOne({
                                 where: {
                                     user_id_instance: user_id_instance
@@ -253,6 +256,7 @@ exports.default = {
                             })];
                     case 1:
                         user_relational = _a.sent();
+                        console.log("user_relational:::", user_relational);
                         pin = {};
                         return [4 /*yield*/, InstanceRelational_1.default.pin_delete_on_have_permission(user_relational)];
                     case 2:
@@ -274,7 +278,6 @@ exports.default = {
                         _a = req.params.storage, instance = _a.instance, user = _a.user;
                         console.log("user_instance:::", instance, req.params);
                         console.log("user:::", user);
-                        console.log("=================user:::");
                         InstanceRepositiory = typeorm_1.getRepository(Instance_1.Instance);
                         return [4 /*yield*/, InstanceRepositiory.findOne({
                                 where: {
@@ -288,12 +291,13 @@ exports.default = {
                                 where: {
                                     user_id_instance: user_id,
                                     instance: currentInstance,
-                                    status: 10
+                                    status: InstanceRelation_1.InstanceRelationalStatus.ACTIVED
                                 },
                                 relations: ["instance"]
                             })];
                     case 2:
                         user_instance = _b.sent();
+                        console.log("=================user_instance:::", user_instance);
                         if (user_instance.userId == user.id) {
                             return [2 /*return*/, res.status(201).json({ error: true, message: "Mesmo usuário!", aprove: {} })];
                         }
@@ -333,7 +337,7 @@ exports.default = {
                                 where: {
                                     user_id_instance: user_id,
                                     instance: currentInstance,
-                                    status: 1
+                                    status: InstanceRelation_1.InstanceRelationalStatus.AWAITING_APPROVED
                                 }
                             })];
                     case 2:

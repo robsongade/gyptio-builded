@@ -26,6 +26,14 @@ var typeorm_1 = require("typeorm");
 var User_1 = require("./User");
 var Instance_1 = require("./Instance");
 var InstanceRelationGroup_1 = require("./InstanceRelationGroup");
+var InstanceRelationalStatus;
+(function (InstanceRelationalStatus) {
+    InstanceRelationalStatus["PENDING"] = "user_instance_pending";
+    InstanceRelationalStatus["AWAITING_APPROVED"] = "user_instance_awaiting_approved";
+    InstanceRelationalStatus["AWAITING_ACCEPT"] = "user_instance_awaiting_accept";
+    InstanceRelationalStatus["ACTIVED"] = "user_instance_actived";
+    InstanceRelationalStatus["REPROVED"] = "user_instance_reproved";
+})(InstanceRelationalStatus = exports.InstanceRelationalStatus || (exports.InstanceRelationalStatus = {}));
 var InstanceRelation = /** @class */ (function (_super) {
     __extends(InstanceRelation, _super);
     function InstanceRelation() {
@@ -50,9 +58,11 @@ var InstanceRelation = /** @class */ (function (_super) {
     ], InstanceRelation.prototype, "instance", void 0);
     __decorate([
         typeorm_1.Column({
-            default: 0
+            type: "enum",
+            default: InstanceRelationalStatus.PENDING,
+            enum: InstanceRelationalStatus,
         }),
-        __metadata("design:type", Number)
+        __metadata("design:type", String)
     ], InstanceRelation.prototype, "status", void 0);
     __decorate([
         typeorm_1.OneToMany(function (type) { return InstanceRelationGroup_1.InstanceRelationGroup; }, function (instance_relation_group) { return instance_relation_group.instanceRelationId; }),

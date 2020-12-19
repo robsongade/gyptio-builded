@@ -36,13 +36,24 @@ var Group = /** @class */ (function (_super) {
         __metadata("design:type", Number)
     ], Group.prototype, "id", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            length: 50
+        }),
         __metadata("design:type", String)
     ], Group.prototype, "name", void 0);
     __decorate([
-        typeorm_1.Column(),
+        typeorm_1.Column({
+            length: 255,
+            nullable: true
+        }),
         __metadata("design:type", String)
     ], Group.prototype, "description", void 0);
+    __decorate([
+        typeorm_1.Column({
+            default: false
+        }),
+        __metadata("design:type", Boolean)
+    ], Group.prototype, "default", void 0);
     __decorate([
         typeorm_1.ManyToOne(function (type) { return Instance_1.Instance; }, function (intance) { return intance.groups; }),
         __metadata("design:type", Instance_1.Instance)

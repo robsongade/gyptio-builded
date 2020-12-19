@@ -11,10 +11,13 @@ var Router = express_1.default.Router;
 var userRouter = Router();
 var User = new User_1.UserController();
 userRouter.post('/register', User.create);
+userRouter.get('/user/permissions', Auth_1.default.permission, Auth_1.default.authorize, User.permission);
 userRouter.post('/user', Auth_1.default.permission, Auth_1.default.authorize, User.users);
 userRouter.get('/user', Auth_1.default.authorize, User.user);
+userRouter.get('/user/:user_id_instance', Auth_1.default.authorize, User.user);
 userRouter.get('/user/aprove/:user_id', Auth_1.default.permission, Auth_1.default.authorize, Instances_1.default.pin_confirm_on_have_permission);
 userRouter.post('/user/edit', Auth_1.default.authorize, User.edit);
+userRouter.post('/user/edit/instance', Auth_1.default.permission, Auth_1.default.authorize, User.edit_instance);
 /*
 userRouter.get('/user/load-invitation',auth.authorize,User.loadInvitation)
 userRouter.post('/user/create-invitation',auth.authorize,User.confirm_user_invitation)

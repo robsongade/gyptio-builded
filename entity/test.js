@@ -23,44 +23,32 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var GroupPermissionItem_1 = require("./GroupPermissionItem");
-var Module = /** @class */ (function (_super) {
-    __extends(Module, _super);
-    function Module() {
+var User_1 = require("./User");
+var Test = /** @class */ (function (_super) {
+    __extends(Test, _super);
+    function Test() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
         __metadata("design:type", Number)
-    ], Module.prototype, "id", void 0);
+    ], Test.prototype, "id", void 0);
     __decorate([
-        typeorm_1.Column({
-            length: 50
-        }),
+        typeorm_1.Column(),
         __metadata("design:type", String)
-    ], Module.prototype, "name", void 0);
+    ], Test.prototype, "names", void 0);
     __decorate([
-        typeorm_1.Column({
-            length: 255,
-            nullable: true
-        }),
+        typeorm_1.Column({ nullable: true }),
         __metadata("design:type", String)
-    ], Module.prototype, "description", void 0);
+    ], Test.prototype, "description", void 0);
     __decorate([
-        typeorm_1.Column({
-            length: 20,
-            unique: true
-        }),
+        typeorm_1.ManyToOne(function (user) { return User_1.User; }, function (user) { return user.id; }),
         __metadata("design:type", String)
-    ], Module.prototype, "code", void 0);
-    __decorate([
-        typeorm_1.OneToMany(function (type) { return GroupPermissionItem_1.GroupPermissionItem; }, function (group_permission_item) { return group_permission_item.module; }),
-        __metadata("design:type", Array)
-    ], Module.prototype, "groups_permission_item", void 0);
-    Module = __decorate([
+    ], Test.prototype, "soteste", void 0);
+    Test = __decorate([
         typeorm_1.Entity()
-    ], Module);
-    return Module;
+    ], Test);
+    return Test;
 }(typeorm_1.BaseEntity));
-exports.Module = Module;
-//# sourceMappingURL=Module.js.map
+exports.Test = Test;
+//# sourceMappingURL=test.js.map

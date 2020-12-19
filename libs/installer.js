@@ -88,6 +88,7 @@ var InstallerGenerator = /** @class */ (function () {
                     case 0:
                         relation = typeorm_1.getRepository(InstanceRelation_1.InstanceRelation);
                         return [4 /*yield*/, relation.save({
+                                status: InstanceRelation_1.InstanceRelationalStatus.ACTIVED,
                                 user: user,
                                 instance: instance
                             })];
