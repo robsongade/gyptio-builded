@@ -244,14 +244,14 @@ var UserController = /** @class */ (function () {
                                     })];
                             case 2:
                                 findInstanceRelational = _c.sent();
-                                if (!edit_groups) return [3 /*break*/, 14];
+                                if (!edit_groups) return [3 /*break*/, 11];
                                 _a = [];
                                 for (_b in edit_groups)
                                     _a.push(_b);
                                 _i = 0;
                                 _c.label = 3;
                             case 3:
-                                if (!(_i < _a.length)) return [3 /*break*/, 14];
+                                if (!(_i < _a.length)) return [3 /*break*/, 11];
                                 g = _a[_i];
                                 group = edit_groups[g];
                                 return [4 /*yield*/, typeorm_1.getRepository(Group_1.Group).findOne({
@@ -262,7 +262,7 @@ var UserController = /** @class */ (function () {
                                     })];
                             case 4:
                                 findGroup = _c.sent();
-                                action = group.delete ? 'delete' : 'add';
+                                action = group.delete ? 'delete' : group.checked ? 'add' : false;
                                 return [4 /*yield*/, typeorm_1.getRepository(InstanceRelationGroup_1.InstanceRelationGroup).findOne({
                                         where: {
                                             group: findGroup,
@@ -271,38 +271,27 @@ var UserController = /** @class */ (function () {
                                     })];
                             case 5:
                                 findItem = _c.sent();
-                                if (!findItem) return [3 /*break*/, 10];
-                                console.log("DELETE:::", findItem);
+                                if (!findItem) return [3 /*break*/, 8];
+                                if (!action) return [3 /*break*/, 7];
                                 if (!(action == 'delete')) return [3 /*break*/, 7];
-                                console.log("DELETE2:::", findItem);
                                 return [4 /*yield*/, typeorm_1.getRepository(InstanceRelationGroup_1.InstanceRelationGroup).delete(findItem.id)];
                             case 6:
                                 _c.sent();
-                                return [3 /*break*/, 9];
-                            case 7: return [4 /*yield*/, typeorm_1.getRepository(InstanceRelationGroup_1.InstanceRelationGroup).update(findItem.id, {
-                                    group: findGroup,
-                                    instanceRelation: findInstanceRelational
-                                })];
+                                _c.label = 7;
+                            case 7: return [3 /*break*/, 10];
                             case 8:
-                                _c.sent();
-                                _c.label = 9;
-                            case 9: return [3 /*break*/, 12];
-                            case 10:
-                                console.log("ADDDfindGroup:::", findGroup, findInstanceRelational, group);
+                                if (!(action && action == "add")) return [3 /*break*/, 10];
                                 return [4 /*yield*/, typeorm_1.getRepository(InstanceRelationGroup_1.InstanceRelationGroup).save({
                                         group: findGroup,
                                         instanceRelation: findInstanceRelational
                                     })];
-                            case 11:
+                            case 9:
                                 _c.sent();
-                                _c.label = 12;
-                            case 12:
-                                console.log('findItem:::', findItem);
-                                _c.label = 13;
-                            case 13:
+                                _c.label = 10;
+                            case 10:
                                 _i++;
                                 return [3 /*break*/, 3];
-                            case 14:
+                            case 11:
                                 // console.log(editUser);
                                 // console.log("editUser:::",editUser,newData)
                                 // const edit = await getRepository(UserEntity).update(user.id,newData)
