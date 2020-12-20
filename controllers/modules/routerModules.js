@@ -12,7 +12,7 @@ routerModules.use(Auth_1.default.permission, Auth_1.default.authorize);
 routerModules.get('/servergame', ServerGameController_1.default.list);
 routerModules.get('/servergame/status', ServerGameController_1.default.status);
 routerModules.get('/servergame/:id', ServerGameController_1.default.loadById);
-routerModules.get('/servergame/delete/:ud', ServerGameController_1.default.delete);
+routerModules.get('/servergame/delete/:id', ServerGameController_1.default.delete);
 routerModules.post('/servergame/edit', ServerGameController_1.default.edit);
 routerModules.post('/servergame/create', ServerGameController_1.default.create);
 exports.default = routerModules;

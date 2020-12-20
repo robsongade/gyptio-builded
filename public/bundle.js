@@ -17881,6 +17881,15 @@ const vue = {
            if(servergame){
                 this.servers = servergame
             }
+      },
+      async delete_server(server){
+          const {success,error} = await this.api.Delete(server.id)
+           if(success){
+            M.toast({ html:  `Success!`, classes: 'green darken-1 rounded'});
+            this.load()
+          }else{
+            M.toast({ html:  `${error.message}`, classes: 'red darken-1 rounded'});
+          }
       }
   }
  
@@ -26578,9 +26587,9 @@ var staticRenderFns = []
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/Modules/ServerGame/ServerGameList.vue?vue&type=template&id=5844ee90&":
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/Modules/ServerGame/ServerGameList.vue?vue&type=template&id=242a43a4&":
 /*!****************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/Modules/ServerGame/ServerGameList.vue?vue&type=template&id=5844ee90& ***!
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/Modules/ServerGame/ServerGameList.vue?vue&type=template&id=242a43a4& ***!
   \****************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -26589,8 +26598,8 @@ var staticRenderFns = []
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row module",style:({ backgroundImage: 'url(' + _vm.imgBGPage + ')' })},[_c('div',{attrs:{"id":"container"}},[_c('div',{staticClass:"row main-instances"},[_c('div',{staticClass:"col s12 m12 l12"},[_c('h4',[_vm._v("Server ")]),_vm._v(" "),_c('h5',[_vm._v("Screen Server configuration")]),_vm._v(" "),_c('div',{staticClass:"row",attrs:{"id":"card-container"}},_vm._l((_vm.servers),function(server,index){return _c('div',{key:index,staticClass:"col s12 m6 l4"},[_c('div',{staticClass:"card text-red red-text"},[_c('div',{staticClass:"card-content white-text"},[_c('section',[_c('div',{staticClass:"card__meta "},[_c('a',[_c('i',{staticClass:"small material-icons "},[_vm._v("business")]),_vm._v(" "+_vm._s(server.name)+":"+_vm._s(server.code))]),_vm._v(" "),_c('time',[_vm._v(_vm._s(_vm._f("DateToBRL")(new Date())))])])]),_vm._v(" "),_c('span',{staticClass:"card-title orange-text padding-5"},[_vm._v("\n                "+_vm._s(server.description || 'No description')+"\n              ")]),_vm._v(" "),_c('span',{staticClass:"disabled"},[_c('p',[_c('label',[_c('input',{attrs:{"type":"checkbox"},domProps:{"checked":server.status == 'server_game_on'}}),_vm._v(" "),_c('span',{staticClass:"green-text bold"},[_vm._v("Online")])])]),_vm._v(" "),_c('p',[_c('label',[_c('input',{attrs:{"type":"checkbox"},domProps:{"checked":server.status == 'server_game_off'}}),_vm._v(" "),_c('span',{staticClass:"red-text bold"},[_vm._v("Offline")])])]),_vm._v(" "),_c('p',[_c('label',[_c('input',{staticClass:"opacity-0",attrs:{"type":"checkbox"},domProps:{"checked":server.status == 'server_game_maintainer_on'}}),_vm._v(" "),_c('span',{staticClass:"blue-text bold"},[_vm._v("Maintainer On")])])]),_vm._v(" "),_c('p',[_c('label',[_c('input',{staticClass:"opacity-0",attrs:{"type":"checkbox"},domProps:{"checked":server.status == 'server_game_maintainer_off'}}),_vm._v(" "),_c('span',{staticClass:"orange-text bold"},[_vm._v("Maintainer Off")])])])])]),_vm._v(" "),_c('div',{staticClass:"card-action "},[_vm._m(0,true),_vm._v(" "),_c('router-link',{staticClass:" right blue-text center-center",attrs:{"to":("/servergame/edit/" + (server.id))}},[_c('i',{staticClass:"material-icons"},[_vm._v(" edit")]),_vm._v("Editar")]),_vm._v(" "),_c('div',{staticClass:"clearfix"})],1)])])}),0),_vm._v(" "),_c('router-link',{staticClass:"btn-floating btn-large waves-effect waves-light red float-btn",attrs:{"to":"/servergame/create"}},[_c('i',{staticClass:"material-icons"},[_vm._v("add")])])],1)])])])}
-var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('a',{staticClass:" right blue-text center-center"},[_c('i',{staticClass:"material-icons"},[_vm._v(" delete")]),_vm._v("Delete")])}]
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"row module",style:({ backgroundImage: 'url(' + _vm.imgBGPage + ')' })},[_c('div',{attrs:{"id":"container"}},[_c('div',{staticClass:"row main-instances"},[_c('div',{staticClass:"col s12 m12 l12"},[_c('h4',[_vm._v("Server ")]),_vm._v(" "),_c('h5',[_vm._v("Screen Server configuration")]),_vm._v(" "),_c('div',{staticClass:"row",attrs:{"id":"card-container"}},_vm._l((_vm.servers),function(server,index){return _c('div',{key:index,staticClass:"col s12 m6 l4"},[_c('div',{staticClass:"card text-red red-text"},[_c('div',{staticClass:"card-content white-text"},[_c('section',[_c('div',{staticClass:"card__meta "},[_c('a',[_c('i',{staticClass:"small material-icons "},[_vm._v("business")]),_vm._v(" "+_vm._s(server.name)+":"+_vm._s(server.code))]),_vm._v(" "),_c('time',[_vm._v(_vm._s(_vm._f("DateToBRL")(new Date())))])])]),_vm._v(" "),_c('span',{staticClass:"card-title orange-text padding-5"},[_vm._v("\n                "+_vm._s(server.description || 'No description')+"\n              ")]),_vm._v(" "),_c('span',{staticClass:"disabled"},[_c('p',[_c('label',[_c('input',{attrs:{"type":"checkbox"},domProps:{"checked":server.status == 'server_game_on'}}),_vm._v(" "),_c('span',{staticClass:"green-text bold"},[_vm._v("Online")])])]),_vm._v(" "),_c('p',[_c('label',[_c('input',{attrs:{"type":"checkbox"},domProps:{"checked":server.status == 'server_game_off'}}),_vm._v(" "),_c('span',{staticClass:"red-text bold"},[_vm._v("Offline")])])]),_vm._v(" "),_c('p',[_c('label',[_c('input',{staticClass:"opacity-0",attrs:{"type":"checkbox"},domProps:{"checked":server.status == 'server_game_maintainer_on'}}),_vm._v(" "),_c('span',{staticClass:"blue-text bold"},[_vm._v("Maintainer On")])])]),_vm._v(" "),_c('p',[_c('label',[_c('input',{staticClass:"opacity-0",attrs:{"type":"checkbox"},domProps:{"checked":server.status == 'server_game_maintainer_off'}}),_vm._v(" "),_c('span',{staticClass:"orange-text bold"},[_vm._v("Maintainer Off")])])])])]),_vm._v(" "),_c('div',{staticClass:"card-action "},[_c('a',{staticClass:" right blue-text center-center pointer",on:{"click":function($event){return _vm.delete_server(server)}}},[_c('i',{staticClass:"material-icons"},[_vm._v(" delete")]),_vm._v("Delete")]),_vm._v(" "),_c('router-link',{staticClass:" right blue-text center-center",attrs:{"to":("/servergame/edit/" + (server.id))}},[_c('i',{staticClass:"material-icons"},[_vm._v(" edit")]),_vm._v("Editar")]),_vm._v(" "),_c('div',{staticClass:"clearfix"})],1)])])}),0),_vm._v(" "),_c('router-link',{staticClass:"btn-floating btn-large waves-effect waves-light red float-btn",attrs:{"to":"/servergame/create"}},[_c('i',{staticClass:"material-icons"},[_vm._v("add")])])],1)])])])}
+var staticRenderFns = []
 
 
 
@@ -40466,6 +40475,22 @@ class ApiServerGame extends Api {
         }
     }
 
+    async Delete(id){
+        const response = await this.get(`/servergame/delete/${id}`)
+        
+        const { error , success } = response.data
+        
+        if (error) {
+          return {
+            error
+          }
+        }
+
+        return {
+            success
+        }
+    }
+    
     async Edit({servergame}){
         const response = await this.post(`/servergame/edit`,{
             servergame
@@ -40629,7 +40654,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ServerGameList_vue_vue_type_template_id_5844ee90___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ServerGameList.vue?vue&type=template&id=5844ee90& */ "./src/Modules/ServerGame/ServerGameList.vue?vue&type=template&id=5844ee90&");
+/* harmony import */ var _ServerGameList_vue_vue_type_template_id_242a43a4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ServerGameList.vue?vue&type=template&id=242a43a4& */ "./src/Modules/ServerGame/ServerGameList.vue?vue&type=template&id=242a43a4&");
 /* harmony import */ var _ServerGameList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ServerGameList.vue?vue&type=script&lang=js& */ "./src/Modules/ServerGame/ServerGameList.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
@@ -40641,8 +40666,8 @@ __webpack_require__.r(__webpack_exports__);
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
   _ServerGameList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ServerGameList_vue_vue_type_template_id_5844ee90___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ServerGameList_vue_vue_type_template_id_5844ee90___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _ServerGameList_vue_vue_type_template_id_242a43a4___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ServerGameList_vue_vue_type_template_id_242a43a4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -40668,19 +40693,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/Modules/ServerGame/ServerGameList.vue?vue&type=template&id=5844ee90&":
+/***/ "./src/Modules/ServerGame/ServerGameList.vue?vue&type=template&id=242a43a4&":
 /*!**********************************************************************************!*\
-  !*** ./src/Modules/ServerGame/ServerGameList.vue?vue&type=template&id=5844ee90& ***!
+  !*** ./src/Modules/ServerGame/ServerGameList.vue?vue&type=template&id=242a43a4& ***!
   \**********************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ServerGameList_vue_vue_type_template_id_5844ee90___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ServerGameList.vue?vue&type=template&id=5844ee90& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/Modules/ServerGame/ServerGameList.vue?vue&type=template&id=5844ee90&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ServerGameList_vue_vue_type_template_id_5844ee90___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ServerGameList_vue_vue_type_template_id_242a43a4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ServerGameList.vue?vue&type=template&id=242a43a4& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/Modules/ServerGame/ServerGameList.vue?vue&type=template&id=242a43a4&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ServerGameList_vue_vue_type_template_id_242a43a4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ServerGameList_vue_vue_type_template_id_5844ee90___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ServerGameList_vue_vue_type_template_id_242a43a4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

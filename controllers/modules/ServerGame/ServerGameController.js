@@ -228,7 +228,7 @@ exports.default = {
             var _this = this;
             return __generator(this, function (_a) {
                 Permission_1.default.set_request(request).check_permission('server_game', 'delete', function (result) { return __awaiter(_this, void 0, void 0, function () {
-                    var id;
+                    var id, instance, findInstance, findInstanceMaster;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
@@ -240,9 +240,36 @@ exports.default = {
                                         })];
                                 }
                                 id = request.params.id;
-                                return [4 /*yield*/, typeorm_1.getRepository(ServerGame_1.ServerGame).delete(id)];
+                                return [4 /*yield*/, Auth_1.default.storage()];
                             case 1:
+                                instance = (_a.sent()).instance;
+                                return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).findOne({
+                                        where: {
+                                            instance_id: instance,
+                                            id: id
+                                        }
+                                    })];
+                            case 2:
+                                findInstance = _a.sent();
+                                if (!findInstance) return [3 /*break*/, 4];
+                                return [4 /*yield*/, typeorm_1.getRepository(ServerGame_1.ServerGame).delete(id)];
+                            case 3:
                                 _a.sent();
+                                return [3 /*break*/, 7];
+                            case 4: return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).findOne({
+                                    where: {
+                                        instance_id: instance,
+                                        type: 'master'
+                                    }
+                                })];
+                            case 5:
+                                findInstanceMaster = _a.sent();
+                                if (!findInstanceMaster) return [3 /*break*/, 7];
+                                return [4 /*yield*/, typeorm_1.getRepository(ServerGame_1.ServerGame).delete(id)];
+                            case 6:
+                                _a.sent();
+                                _a.label = 7;
+                            case 7:
                                 response.send({
                                     success: true
                                 });
