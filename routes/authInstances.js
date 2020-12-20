@@ -12,6 +12,7 @@ routerAuth.post('/instances', Auth_1.default.verify, Instances_1.default.list);
 routerAuth.post('/instances/create', Auth_1.default.authorize, Instances_1.default.create);
 routerAuth.get('/instances', Auth_1.default.authorize, Instances_1.default.list);
 routerAuth.get('/instances/all', Auth_1.default.authorize, Instances_1.default.all);
+routerAuth.get('/instance/all_instances', Auth_1.default.permission, Auth_1.default.authorize, Instances_1.default.all_instances);
 routerAuth.get('/instances/:instance_id', Auth_1.default.authorize, Instances_1.default.instance);
 routerAuth.post('/instances/edit/:instance_id', Auth_1.default.authorize, Instances_1.default.edit);
 routerAuth.get('/instances/pin/:instance_id', Auth_1.default.authorize, Instances_1.default.pin);

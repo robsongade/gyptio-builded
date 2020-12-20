@@ -39,7 +39,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
+var Instance_1 = require("../../../entity/Instance");
 var ServerGame_1 = require("../../../entity/modules/ServerGame/ServerGame");
+var Auth_1 = __importDefault(require("../../Auth"));
 var Permission_1 = __importDefault(require("../../Permission"));
 exports.default = {
     create: function (request, response) {
@@ -47,15 +49,74 @@ exports.default = {
             var _this = this;
             return __generator(this, function (_a) {
                 Permission_1.default.set_request(request).check_permission('server_game', 'create', function (result) { return __awaiter(_this, void 0, void 0, function () {
-                    return __generator(this, function (_a) {
-                        if (!result) {
-                            return [2 /*return*/, response.send({
-                                    error: {
-                                        message: "error permission"
+                    var _a, instance, user, _b, servergame, instance_id, findInstance, findInstance, name, description, status, e_1;
+                    return __generator(this, function (_c) {
+                        switch (_c.label) {
+                            case 0:
+                                if (!result) {
+                                    return [2 /*return*/, response.send({
+                                            error: {
+                                                message: "error permission"
+                                            }
+                                        })];
+                                }
+                                return [4 /*yield*/, Auth_1.default.storage()
+                                    //TODO: check instance server
+                                ];
+                            case 1:
+                                _a = _c.sent(), instance = _a.instance, user = _a.user;
+                                _b = request.body, servergame = _b.servergame, instance_id = _b.instance_id;
+                                if (!servergame.instance_id) return [3 /*break*/, 3];
+                                return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).findOne({
+                                        where: {
+                                            instance_id: instance,
+                                            type: 'master'
+                                        }
+                                    })];
+                            case 2:
+                                findInstance = _c.sent();
+                                _c.label = 3;
+                            case 3:
+                                if (!findInstance) return [3 /*break*/, 4];
+                                instance_id = servergame.instance_id;
+                                return [3 /*break*/, 6];
+                            case 4: return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).findOne({
+                                    where: {
+                                        instance_id: instance
                                     }
                                 })];
+                            case 5:
+                                findInstance = _c.sent();
+                                if (findInstance) {
+                                    instance_id = findInstance.id;
+                                }
+                                _c.label = 6;
+                            case 6:
+                                name = servergame.name, description = servergame.description, status = servergame.status;
+                                _c.label = 7;
+                            case 7:
+                                _c.trys.push([7, 9, , 10]);
+                                return [4 /*yield*/, typeorm_1.getRepository(ServerGame_1.ServerGame).save({
+                                        name: name, description: description, status: status,
+                                        instance_id: instance_id
+                                    })];
+                            case 8:
+                                _c.sent();
+                                response.send({
+                                    success: true
+                                });
+                                return [3 /*break*/, 10];
+                            case 9:
+                                e_1 = _c.sent();
+                                response.send({
+                                    error: {
+                                        message: "Internal error : " + e_1.message,
+                                        user: user, findInstance: findInstance
+                                    }
+                                });
+                                return [3 /*break*/, 10];
+                            case 10: return [2 /*return*/];
                         }
-                        return [2 /*return*/];
                     });
                 }); }, true);
                 return [2 /*return*/];
@@ -67,7 +128,107 @@ exports.default = {
             var _this = this;
             return __generator(this, function (_a) {
                 Permission_1.default.set_request(request).check_permission('server_game', 'edit', function (result) { return __awaiter(_this, void 0, void 0, function () {
-                    var servergame, name, description, id, status;
+                    var _a, servergame, instance_id, name, description, id, status, instance, findInstance, e_2;
+                    return __generator(this, function (_b) {
+                        switch (_b.label) {
+                            case 0:
+                                if (!result) {
+                                    return [2 /*return*/, response.send({
+                                            error: {
+                                                message: "error permission"
+                                            }
+                                        })];
+                                }
+                                _a = request.body, servergame = _a.servergame, instance_id = _a.instance_id;
+                                name = servergame.name, description = servergame.description, id = servergame.id, status = servergame.status;
+                                return [4 /*yield*/, Auth_1.default.storage()];
+                            case 1:
+                                instance = (_b.sent()).instance;
+                                if (!servergame.instance_id) return [3 /*break*/, 3];
+                                return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).findOne({
+                                        where: {
+                                            instance_id: instance,
+                                            type: 'master'
+                                        }
+                                    })];
+                            case 2:
+                                findInstance = _b.sent();
+                                _b.label = 3;
+                            case 3:
+                                if (findInstance) {
+                                    instance_id = servergame.instance_id;
+                                }
+                                else {
+                                    instance_id = false;
+                                }
+                                _b.label = 4;
+                            case 4:
+                                _b.trys.push([4, 9, , 10]);
+                                if (!instance_id) return [3 /*break*/, 6];
+                                return [4 /*yield*/, typeorm_1.getRepository(ServerGame_1.ServerGame).update(id, {
+                                        name: name, description: description, status: status, instance_id: instance_id
+                                    })];
+                            case 5:
+                                _b.sent();
+                                return [3 /*break*/, 8];
+                            case 6: return [4 /*yield*/, typeorm_1.getRepository(ServerGame_1.ServerGame).update(id, {
+                                    name: name, description: description, status: status
+                                })];
+                            case 7:
+                                _b.sent();
+                                _b.label = 8;
+                            case 8: return [3 /*break*/, 10];
+                            case 9:
+                                e_2 = _b.sent();
+                                response.send({
+                                    error: {
+                                        message: "Internal error : " + e_2.message
+                                    }
+                                });
+                                return [3 /*break*/, 10];
+                            case 10:
+                                response.send({
+                                    success: true, findInstance: findInstance
+                                });
+                                return [2 /*return*/];
+                        }
+                    });
+                }); }, true);
+                return [2 /*return*/];
+            });
+        });
+    },
+    status: function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            var server_status, status_default, i, status;
+            return __generator(this, function (_a) {
+                server_status = [];
+                status_default = {};
+                for (i in ServerGame_1.ServerGameStatus) {
+                    status = {
+                        value: i,
+                        name: ServerGame_1.ServerGameStatus[i]
+                    };
+                    if (status.name == ServerGame_1.ServerGameStatus.OFF) {
+                        status_default = status;
+                    }
+                    server_status.push(status);
+                }
+                response.send({
+                    success: true,
+                    server_status: server_status,
+                    status_default: status_default
+                });
+                return [2 /*return*/];
+            });
+        });
+    },
+    delete: function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                Permission_1.default.set_request(request).check_permission('server_game', 'delete', function (result) { return __awaiter(_this, void 0, void 0, function () {
+                    var id;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
@@ -78,11 +239,8 @@ exports.default = {
                                             }
                                         })];
                                 }
-                                servergame = request.body.servergame;
-                                name = servergame.name, description = servergame.description, id = servergame.id, status = servergame.status;
-                                return [4 /*yield*/, typeorm_1.getRepository(ServerGame_1.ServerGame).update(id, {
-                                        name: name, description: description, status: status
-                                    })];
+                                id = request.params.id;
+                                return [4 /*yield*/, typeorm_1.getRepository(ServerGame_1.ServerGame).delete(id)];
                             case 1:
                                 _a.sent();
                                 response.send({
@@ -101,7 +259,7 @@ exports.default = {
             var _this = this;
             return __generator(this, function (_a) {
                 Permission_1.default.set_request(request).check_permission('server_game', 'list', function (result) { return __awaiter(_this, void 0, void 0, function () {
-                    var findServers;
+                    var instance, findInstance, findInstanceMaster, findServers, findServers;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
@@ -112,9 +270,38 @@ exports.default = {
                                             }
                                         })];
                                 }
-                                return [4 /*yield*/, typeorm_1.getRepository(ServerGame_1.ServerGame).find()];
+                                return [4 /*yield*/, Auth_1.default.storage()];
                             case 1:
+                                instance = (_a.sent()).instance;
+                                return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).findOne({
+                                        where: {
+                                            instance_id: instance
+                                        }
+                                    })];
+                            case 2:
+                                findInstance = _a.sent();
+                                return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).findOne({
+                                        where: {
+                                            instance_id: instance,
+                                            type: 'master'
+                                        }
+                                    })];
+                            case 3:
+                                findInstanceMaster = _a.sent();
+                                if (!findInstanceMaster) return [3 /*break*/, 5];
+                                return [4 /*yield*/, typeorm_1.getRepository(ServerGame_1.ServerGame).find()];
+                            case 4:
                                 findServers = _a.sent();
+                                return [3 /*break*/, 7];
+                            case 5: return [4 /*yield*/, typeorm_1.getRepository(ServerGame_1.ServerGame).find({
+                                    where: {
+                                        instance_id: findInstance.id
+                                    }
+                                })];
+                            case 6:
+                                findServers = _a.sent();
+                                _a.label = 7;
+                            case 7:
                                 response.send({
                                     servergame: findServers
                                 });

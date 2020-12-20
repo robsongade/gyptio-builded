@@ -44,6 +44,13 @@ var _User = new User_1.UserController();
 var Permission_1 = __importDefault(require("./Permission"));
 var secret = process.env.SECRET || 'secret';
 exports.default = {
+    storage: function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, global.storage];
+            });
+        });
+    },
     auth: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var validate, instances, id, token, origin_instance, find;
@@ -199,6 +206,10 @@ exports.default = {
                     req.params.storage = {
                         user: decoded.user,
                         instance: instance || decoded.instance_id
+                    };
+                    global.storage = {
+                        instance: instance || decoded.instance_id,
+                        user: decoded.user
                     };
                     next();
                 });

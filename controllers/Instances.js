@@ -41,13 +41,53 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var Instance_1 = require("../entity/Instance");
 var InstanceRelation_1 = require("../entity/InstanceRelation");
+var Auth_1 = __importDefault(require("./Auth"));
 var InstanceRelational_1 = __importDefault(require("./InstanceRelational"));
 var dns = require("dns");
 var secret = process.env.SECRET;
 exports.default = {
+    all_instances: function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var instance, findInstanceMaster, instances, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 5, , 6]);
+                        return [4 /*yield*/, Auth_1.default.storage()];
+                    case 1:
+                        instance = (_a.sent()).instance;
+                        return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).findOne({
+                                where: {
+                                    instance_id: instance,
+                                    type: 'master'
+                                }
+                            })];
+                    case 2:
+                        findInstanceMaster = _a.sent();
+                        instances = [];
+                        if (!findInstanceMaster) return [3 /*break*/, 4];
+                        return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).find()];
+                    case 3:
+                        instances = _a.sent();
+                        _a.label = 4;
+                    case 4:
+                        res.status(201).json({
+                            instances: instances,
+                            instance: instance, findInstanceMaster: findInstanceMaster
+                        });
+                        return [3 /*break*/, 6];
+                    case 5:
+                        e_1 = _a.sent();
+                        res.status(201).json({ error: true, instances: [] });
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    },
     list: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, instances_relational, e_1;
+            var user, instances_relational, e_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -71,8 +111,8 @@ exports.default = {
                         });
                         return [3 /*break*/, 3];
                     case 2:
-                        e_1 = _a.sent();
-                        console.log("e:::", e_1);
+                        e_2 = _a.sent();
+                        console.log("e:::", e_2);
                         res.status(201).json({ error: true, instances: [] });
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
@@ -82,7 +122,7 @@ exports.default = {
     },
     all: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var instances_relational, e_2;
+            var instances_relational, e_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -104,8 +144,8 @@ exports.default = {
                         res.status(201).json({ all_instances: instances_relational });
                         return [3 /*break*/, 3];
                     case 2:
-                        e_2 = _a.sent();
-                        console.log("e:::", e_2);
+                        e_3 = _a.sent();
+                        console.log("e:::", e_3);
                         res.status(201).json({ error: true, all_instances: [] });
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
