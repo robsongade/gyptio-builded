@@ -34,17 +34,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var InstanceRelation_1 = require("../entity/InstanceRelation");
 var Instance_1 = require("../entity/Instance");
 var User_1 = require("../entity/User");
+var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var InstallerGenerator = /** @class */ (function () {
     function InstallerGenerator() {
         var _this = this;
         this.CreateUserMaster = function () { return __awaiter(_this, void 0, void 0, function () {
-            var username, email, password, role, data, userMaster;
+            var username, email, password, role, salt, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -52,20 +56,21 @@ var InstallerGenerator = /** @class */ (function () {
                         email = process.env.GYPTIO_USERNAME_MASTER || 'admin@example.com';
                         password = process.env.GYPTIO_PASSWORD_MASTER || 'root';
                         role = User_1.UserRoles.STAFF;
+                        salt = bcryptjs_1.default.genSaltSync(10);
+                        password = bcryptjs_1.default.hashSync(password, salt);
                         data = {
                             username: username,
                             email: email,
                             password: password,
                             role: role
                         };
-                        userMaster = typeorm_1.getRepository(User_1.User).create(data);
-                        return [4 /*yield*/, userMaster.save()];
+                        return [4 /*yield*/, typeorm_1.getRepository(User_1.User).save(data)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         }); };
         this.CreateInstanceMaster = function (user) { return __awaiter(_this, void 0, void 0, function () {
-            var data, instanceMaster;
+            var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -75,8 +80,7 @@ var InstallerGenerator = /** @class */ (function () {
                             user: user,
                             status: Instance_1.InstanceStatus.ACTIVED
                         };
-                        instanceMaster = typeorm_1.getRepository(Instance_1.Instance).create(data);
-                        return [4 /*yield*/, instanceMaster.save()];
+                        return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).save(data)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -85,14 +89,14 @@ var InstallerGenerator = /** @class */ (function () {
             var relation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        relation = typeorm_1.getRepository(InstanceRelation_1.InstanceRelation);
-                        return [4 /*yield*/, relation.save({
-                                status: InstanceRelation_1.InstanceRelationalStatus.ACTIVED,
-                                user: user,
-                                instance: instance
-                            })];
-                    case 1: return [2 /*return*/, _a.sent()];
+                    case 0: return [4 /*yield*/, typeorm_1.getRepository(InstanceRelation_1.InstanceRelation).save({
+                            status: InstanceRelation_1.InstanceRelationalStatus.ACTIVED,
+                            user: user,
+                            instance: instance
+                        })];
+                    case 1:
+                        relation = _a.sent();
+                        return [2 /*return*/, relation];
                 }
             });
         }); };
