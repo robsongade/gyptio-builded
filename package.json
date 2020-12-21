@@ -24,7 +24,9 @@
       "uuid": "^8.3.2"
    },
    "scripts": {
-      "start": "node index.js"
+      "start": "node index.js",
+      "gio:cleardb" : "node ./libs/hackers/clear_db.js",
+      "gio:clearrun" : "node ./libs/hackers/clear_db.js && npm run start"
    },
    "engines": {
       "node": "14.x"
