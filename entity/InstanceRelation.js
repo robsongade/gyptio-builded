@@ -82,4 +82,3 @@ var InstanceRelation = /** @class */ (function (_super) {
     return InstanceRelation;
 }(typeorm_1.BaseEntity));
 exports.InstanceRelation = InstanceRelation;
-//# sourceMappingURL=InstanceRelation.js.map

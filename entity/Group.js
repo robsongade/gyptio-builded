@@ -76,4 +76,3 @@ var Group = /** @class */ (function (_super) {
     return Group;
 }(typeorm_1.BaseEntity));
 exports.Group = Group;
-//# sourceMappingURL=Group.js.map

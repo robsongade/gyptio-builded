@@ -34,101 +34,31 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-var express_1 = __importDefault(require("express"));
 require("express-async-errors");
 require("dotenv");
 var typeorm_1 = require("typeorm");
-//import { Installer } from './lib/installer'
-var User_1 = require("../../entity/User");
-var Instance_1 = require("../../entity/Instance");
-var InstanceRelation_1 = require("../../entity/InstanceRelation");
-var wait = true;
 console.log("clear init");
 typeorm_1.createConnection().then(function (connection) { return __awaiter(_this, void 0, void 0, function () {
-    var cors, app, del, _a, _b, _i, x, data, a, _c, _d, _e, x, data, a, _f, _g, _h, x, data, a, e_1;
-    return __generator(this, function (_j) {
-        switch (_j.label) {
+    var e_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                _j.trys.push([0, 16, , 17]);
-                cors = require('cors');
-                app = express_1.default();
-                app.use('/', express_1.default.static(__dirname + '/../public'));
-                app.use(express_1.default.static("./../public"));
-                app.use(cors());
-                app.use(express_1.default.json());
-                return [4 /*yield*/, connection.manager.getRepository(InstanceRelation_1.InstanceRelation).find()];
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, connection.dropDatabase()];
             case 1:
-                del = _j.sent();
-                _a = [];
-                for (_b in del)
-                    _a.push(_b);
-                _i = 0;
-                _j.label = 2;
+                _a.sent();
+                return [4 /*yield*/, connection.synchronize()];
             case 2:
-                if (!(_i < _a.length)) return [3 /*break*/, 5];
-                x = _a[_i];
-                data = del[x];
-                console.log("deleted", data);
-                return [4 /*yield*/, connection.manager.getRepository(InstanceRelation_1.InstanceRelation).delete(data.id)];
+                _a.sent();
+                return [3 /*break*/, 4];
             case 3:
-                a = _j.sent();
-                _j.label = 4;
-            case 4:
-                _i++;
-                return [3 /*break*/, 2];
-            case 5: return [4 /*yield*/, connection.manager.getRepository(Instance_1.Instance).find()];
-            case 6:
-                del = _j.sent();
-                _c = [];
-                for (_d in del)
-                    _c.push(_d);
-                _e = 0;
-                _j.label = 7;
-            case 7:
-                if (!(_e < _c.length)) return [3 /*break*/, 10];
-                x = _c[_e];
-                data = del[x];
-                console.log("deleted", data);
-                return [4 /*yield*/, connection.manager.getRepository(Instance_1.Instance).delete(data.id)];
-            case 8:
-                a = _j.sent();
-                _j.label = 9;
-            case 9:
-                _e++;
-                return [3 /*break*/, 7];
-            case 10: return [4 /*yield*/, connection.manager.getRepository(User_1.User).find()];
-            case 11:
-                del = _j.sent();
-                _f = [];
-                for (_g in del)
-                    _f.push(_g);
-                _h = 0;
-                _j.label = 12;
-            case 12:
-                if (!(_h < _f.length)) return [3 /*break*/, 15];
-                x = _f[_h];
-                data = del[x];
-                console.log("deleted", data);
-                return [4 /*yield*/, connection.manager.getRepository(User_1.User).delete(data.id)];
-            case 13:
-                a = _j.sent();
-                _j.label = 14;
-            case 14:
-                _h++;
-                return [3 /*break*/, 12];
-            case 15: return [3 /*break*/, 17];
-            case 16:
-                e_1 = _j.sent();
+                e_1 = _a.sent();
                 console.log(e_1);
-                return [3 /*break*/, 17];
-            case 17:
-                wait = false;
+                return [3 /*break*/, 4];
+            case 4:
                 console.log("clear");
                 return [2 /*return*/];
         }
@@ -136,4 +66,3 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
 }); });
 console.log("clearning");
 //ts-node ./src/tests_local/clear_db.ts && ts-node src/index.ts
-//# sourceMappingURL=clear_db.js.map

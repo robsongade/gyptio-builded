@@ -9,4 +9,3 @@ var Router = express_1.default.Router;
 var itemRouter = Router();
 itemRouter.get('/item', ItemController_1.default.get);
 exports.default = itemRouter;
-//# sourceMappingURL=itemRouter.js.map

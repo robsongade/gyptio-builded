@@ -15,4 +15,3 @@ routerAuth.post('/permission/group_add/', Auth_1.default.permission, Auth_1.defa
 routerAuth.post('/permission', Auth_1.default.authorize, Permission_1.default.group);
 routerAuth.post('/permission/delete_group', Auth_1.default.permission, Auth_1.default.authorize, Permission_1.default.delete_group);
 exports.default = routerAuth;
-//# sourceMappingURL=permissionRouter.js.map

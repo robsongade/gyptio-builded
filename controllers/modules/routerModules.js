@@ -16,4 +16,3 @@ routerModules.get('/servergame/delete/:id', ServerGameController_1.default.delet
 routerModules.post('/servergame/edit', ServerGameController_1.default.edit);
 routerModules.post('/servergame/create', ServerGameController_1.default.create);
 exports.default = routerModules;
-//# sourceMappingURL=routerModules.js.map

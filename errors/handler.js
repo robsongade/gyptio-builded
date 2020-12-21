@@ -5,4 +5,3 @@ var errorHandler = function (error, request, response, next) {
     return response.json({ message: 'Internal error!', error: error });
 };
 exports.default = errorHandler;
-//# sourceMappingURL=handler.js.map

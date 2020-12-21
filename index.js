@@ -30,4 +30,3 @@ var run = function () {
     });
 };
 run();
-//# sourceMappingURL=index.js.map

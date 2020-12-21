@@ -84,4 +84,3 @@ var GroupPermissionItem = /** @class */ (function (_super) {
     return GroupPermissionItem;
 }(typeorm_1.BaseEntity));
 exports.GroupPermissionItem = GroupPermissionItem;
-//# sourceMappingURL=GroupPermissionItem.js.map

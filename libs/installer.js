@@ -44,6 +44,8 @@ var InstanceRelation_1 = require("../entity/InstanceRelation");
 var Instance_1 = require("../entity/Instance");
 var User_1 = require("../entity/User");
 var bcryptjs_1 = __importDefault(require("bcryptjs"));
+var Module_1 = require("./../entity/Module");
+var Group_1 = require("../entity/Group");
 var InstallerGenerator = /** @class */ (function () {
     function InstallerGenerator() {
         var _this = this;
@@ -78,7 +80,8 @@ var InstallerGenerator = /** @class */ (function () {
                             name: "Installer",
                             description: "This is an instance of total control for general management",
                             user: user,
-                            status: Instance_1.InstanceStatus.ACTIVED
+                            status: Instance_1.InstanceStatus.ACTIVED,
+                            type: Instance_1.TypeInstance.MASTER
                         };
                         return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).save(data)];
                     case 1: return [2 /*return*/, _a.sent()];
@@ -100,6 +103,62 @@ var InstallerGenerator = /** @class */ (function () {
                 }
             });
         }); };
+        this.CreateModules = function () { return __awaiter(_this, void 0, void 0, function () {
+            var create_modules, _a, _b, _i, m, modulos;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        create_modules = [{
+                                name: "Permission",
+                                code: "permission"
+                            }, {
+                                name: "Module",
+                                code: "module"
+                            }, {
+                                name: "User",
+                                code: "user"
+                            }];
+                        _a = [];
+                        for (_b in create_modules)
+                            _a.push(_b);
+                        _i = 0;
+                        _c.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        m = _a[_i];
+                        return [4 /*yield*/, typeorm_1.getRepository(Module_1.Module).save(create_modules[m])];
+                    case 2:
+                        _c.sent();
+                        _c.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [4 /*yield*/, typeorm_1.getRepository(Module_1.Module).find()];
+                    case 5:
+                        modulos = _c.sent();
+                        return [2 /*return*/, modulos];
+                }
+            });
+        }); };
+        this.CreateGroup = function (instance) { return __awaiter(_this, void 0, void 0, function () {
+            var data, modulos;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        data = {
+                            name: "Administrator",
+                            instance: instance
+                        };
+                        return [4 /*yield*/, typeorm_1.getRepository(Group_1.Group).save(data)];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, typeorm_1.getRepository(Group_1.Group).findOne()];
+                    case 2:
+                        modulos = _a.sent();
+                        return [2 /*return*/, modulos];
+                }
+            });
+        }); };
     }
     InstallerGenerator.prototype.__construct = function () {
         console.log("Installer");
@@ -116,7 +175,7 @@ exports.Installer = function () { return __awaiter(_this, void 0, void 0, functi
                 return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne()];
             case 1:
                 user = _a.sent();
-                if (!!user) return [3 /*break*/, 5];
+                if (!!user) return [3 /*break*/, 8];
                 return [4 /*yield*/, installerGenerator.CreateUserMaster()];
             case 2:
                 new_user = _a.sent();
@@ -124,15 +183,22 @@ exports.Installer = function () { return __awaiter(_this, void 0, void 0, functi
                 return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).findOne()];
             case 3:
                 instance = _a.sent();
-                if (!!instance) return [3 /*break*/, 5];
+                if (!!instance) return [3 /*break*/, 8];
                 console.log("Creating instance...");
                 return [4 /*yield*/, installerGenerator.CreateInstanceMaster(new_user)];
             case 4:
                 instance = _a.sent();
-                installerGenerator.CreateInstanceRelation(new_user, instance);
-                _a.label = 5;
-            case 5: return [2 /*return*/];
+                return [4 /*yield*/, installerGenerator.CreateInstanceRelation(new_user, instance)];
+            case 5:
+                _a.sent();
+                return [4 /*yield*/, installerGenerator.CreateModules()];
+            case 6:
+                _a.sent();
+                return [4 /*yield*/, installerGenerator.CreateGroup(instance)];
+            case 7:
+                _a.sent();
+                _a.label = 8;
+            case 8: return [2 /*return*/];
         }
     });
 }); };
-//# sourceMappingURL=installer.js.map

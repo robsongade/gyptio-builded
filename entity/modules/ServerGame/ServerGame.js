@@ -69,4 +69,3 @@ var ServerGame = /** @class */ (function (_super) {
     return ServerGame;
 }(typeorm_1.BaseEntity));
 exports.ServerGame = ServerGame;
-//# sourceMappingURL=ServerGame.js.map

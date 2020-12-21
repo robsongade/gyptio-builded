@@ -111,4 +111,3 @@ var User = /** @class */ (function (_super) {
     return User;
 }(typeorm_1.BaseEntity));
 exports.User = User;
-//# sourceMappingURL=User.js.map

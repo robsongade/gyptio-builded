@@ -23,4 +23,3 @@ routerApi.use('/api', Auth_1.default.permission, Auth_1.default.authorize, modul
 routerApi.use('/api', itemRouter_1.default);
 routerApi.use('/api', Auth_1.default.permission, Auth_1.default.authorize, routerModules_1.default);
 exports.default = routerApi;
-//# sourceMappingURL=routes.js.map

@@ -15,4 +15,3 @@ moduleRouter.get('/module/edit/:id', module.load);
 moduleRouter.get('/module/delete/:id', module.delete);
 moduleRouter.post('/module/create', module.create);
 exports.default = moduleRouter;
-//# sourceMappingURL=moduleRouter.js.map

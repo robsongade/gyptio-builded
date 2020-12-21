@@ -155,24 +155,22 @@ exports.default = {
                                     return [4 /*yield*/, Permission_1.default.permission_instance_user(instance, decoded.user)];
                                 case 1:
                                     permissions = _a.sent();
-                                    if (!permissions.instance) {
+                                    if (!permissions) {
                                         res.status(201).json({ auth: false, decoded: decoded, error: {
-                                                message: 'Instance or permission not found!'
+                                                message: 'Permission not found!!!'
                                             } });
                                         return [2 /*return*/];
                                     }
-                                    else {
-                                        for (i in permissions.permissions) {
-                                            module = permissions.permissions[i];
-                                            console.log(module);
-                                            if (permissions.permissions[module]) {
-                                                if (!global._permissions[module]) {
-                                                    global._permissions[module] = {};
-                                                }
-                                                items = permissions.permissions[module];
-                                                for (m in items) {
-                                                    global._permissions[module][m] = items[m];
-                                                }
+                                    for (i in permissions.permissions) {
+                                        module = permissions.permissions[i];
+                                        console.log(module);
+                                        if (permissions.permissions[module]) {
+                                            if (!global._permissions[module]) {
+                                                global._permissions[module] = {};
+                                            }
+                                            items = permissions.permissions[module];
+                                            for (m in items) {
+                                                global._permissions[module][m] = items[m];
                                             }
                                         }
                                     }
@@ -225,4 +223,3 @@ exports.default = {
         });
     }
 };
-//# sourceMappingURL=Auth.js.map

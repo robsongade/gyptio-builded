@@ -1,7 +1,4 @@
 "use strict";
-/*
-    TODO: instance not found if not have permission
-*/
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -514,8 +511,10 @@ var PermissionController = /** @class */ (function () {
                             })];
                     case 1:
                         instance = _f.sent();
-                        if (!instance)
+                        if (!instance) {
                             return [2 /*return*/];
+                        }
+                        ;
                         console.log("instance:::", instance);
                         return [4 /*yield*/, instanceRelationalRepository.findOne({
                                 where: {
@@ -620,4 +619,3 @@ var PermissionController = /** @class */ (function () {
 }());
 var Permission = new PermissionController();
 exports.default = Permission;
-//# sourceMappingURL=Permission.js.map

@@ -20,4 +20,3 @@ routerAuth.get('/instances/pin/cancel/:user_id_instance', Auth_1.default.authori
 routerAuth.get('/instances/pin/delete/:user_id', Auth_1.default.authorize, Instances_1.default.pin_delete_on_have_permission);
 routerAuth.post('/instances/check-txt', Auth_1.default.authorize, Instances_1.default.check_text);
 exports.default = routerAuth;
-//# sourceMappingURL=authInstances.js.map

@@ -28,4 +28,3 @@ userRouter.post('/user/edit/:user_id',auth.authorize,User.edit)
 userRouter.get('/user/aprove/:user_id',auth.authorize,instance.pin_confirm_on_have_permission)
 */
 exports.default = userRouter;
-//# sourceMappingURL=userRouter.js.map

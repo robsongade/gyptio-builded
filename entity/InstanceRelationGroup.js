@@ -56,4 +56,3 @@ var InstanceRelationGroup = /** @class */ (function (_super) {
     return InstanceRelationGroup;
 }(typeorm_1.BaseEntity));
 exports.InstanceRelationGroup = InstanceRelationGroup;
-//# sourceMappingURL=InstanceRelationGroup.js.map

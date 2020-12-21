@@ -10,4 +10,3 @@ var routerAuth = Router();
 routerAuth.post('/auth', Auth_1.default.auth);
 routerAuth.get('/verify', Auth_1.default.verify);
 exports.default = routerAuth;
-//# sourceMappingURL=authRouter.js.map

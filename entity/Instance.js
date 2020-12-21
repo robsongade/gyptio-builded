@@ -132,4 +132,3 @@ var Instance = /** @class */ (function (_super) {
     return Instance;
 }(typeorm_1.BaseEntity));
 exports.Instance = Instance;
-//# sourceMappingURL=Instance.js.map

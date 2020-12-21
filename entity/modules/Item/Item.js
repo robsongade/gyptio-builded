@@ -46,4 +46,3 @@ var Item = /** @class */ (function (_super) {
     return Item;
 }(typeorm_1.BaseEntity));
 exports.Item = Item;
-//# sourceMappingURL=Item.js.map
