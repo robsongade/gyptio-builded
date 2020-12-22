@@ -4,6 +4,7 @@ node_modules/
 tmp/
 temp/
 .env
+tests_local/
 package-*.json
 yarn-*.json
-**/**.map
+public/

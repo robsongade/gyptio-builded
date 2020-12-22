@@ -157,7 +157,8 @@ exports.default = {
                                     permissions = _a.sent();
                                     if (!permissions) {
                                         res.status(201).json({ auth: false, decoded: decoded, error: {
-                                                message: 'Permission not found!!!'
+                                                message: 'Permission not found!!!',
+                                                destroy_session: true
                                             } });
                                         return [2 /*return*/];
                                     }
