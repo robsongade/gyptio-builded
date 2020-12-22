@@ -7,4 +7,3 @@ temp/
 tests_local/
 package-*.json
 yarn-*.json
-public/
