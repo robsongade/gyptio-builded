@@ -22,45 +22,48 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Module = void 0;
+exports.Player = void 0;
 var typeorm_1 = require("typeorm");
-var GroupPermissionItem_1 = require("./GroupPermissionItem");
-var Module = /** @class */ (function (_super) {
-    __extends(Module, _super);
-    function Module() {
+var ServerGame_1 = require("../ServerGame/ServerGame");
+var Character_1 = require("../Character/Character");
+var Player = /** @class */ (function (_super) {
+    __extends(Player, _super);
+    function Player() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
         __metadata("design:type", Number)
-    ], Module.prototype, "id", void 0);
+    ], Player.prototype, "id", void 0);
     __decorate([
-        typeorm_1.Column({
-            length: 50
-        }),
-        __metadata("design:type", String)
-    ], Module.prototype, "name", void 0);
+        typeorm_1.CreateDateColumn(),
+        __metadata("design:type", Date)
+    ], Player.prototype, "created_at", void 0);
     __decorate([
-        typeorm_1.Column({
-            length: 255,
-            nullable: true
-        }),
-        __metadata("design:type", String)
-    ], Module.prototype, "description", void 0);
+        typeorm_1.UpdateDateColumn(),
+        __metadata("design:type", Date)
+    ], Player.prototype, "updated_at", void 0);
     __decorate([
-        typeorm_1.Column({
-            length: 20,
-            unique: true
-        }),
-        __metadata("design:type", String)
-    ], Module.prototype, "code", void 0);
+        typeorm_1.ManyToOne(function (type) { return ServerGame_1.ServerGame; }, function (server_game) { return server_game.players; }),
+        __metadata("design:type", ServerGame_1.ServerGame)
+    ], Player.prototype, "servergame", void 0);
     __decorate([
-        typeorm_1.OneToMany(function (type) { return GroupPermissionItem_1.GroupPermissionItem; }, function (group_permission_item) { return group_permission_item.module; }),
+        typeorm_1.OneToMany(function (data) { return Character_1.Character; }, function (data) { return data.player; }),
         __metadata("design:type", Array)
-    ], Module.prototype, "groups_permission_item", void 0);
-    Module = __decorate([
+    ], Player.prototype, "character", void 0);
+    __decorate([
+        typeorm_1.Column({
+            length: 36
+        }),
+        __metadata("design:type", String)
+    ], Player.prototype, "user", void 0);
+    __decorate([
+        typeorm_1.RelationId(function (player) { return player.servergame; }),
+        __metadata("design:type", Number)
+    ], Player.prototype, "servergameId", void 0);
+    Player = __decorate([
         typeorm_1.Entity()
-    ], Module);
-    return Module;
+    ], Player);
+    return Player;
 }(typeorm_1.BaseEntity));
-exports.Module = Module;
+exports.Player = Player;

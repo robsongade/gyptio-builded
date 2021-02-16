@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -83,6 +84,51 @@ exports.default = {
                                 user_id_instance: find.user_id_instance
                             };
                         }
+                        if (instances.goto)
+                            return [2 /*return*/, res.json({ goto: instances.goto })];
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, res.json({ auth: true, token: token, user: validate, instances: instances, origin_instance: origin_instance })];
+                    case 5:
+                        res.status(201).json({ error: 'Login inválido!' });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    },
+    auth_email: function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var validate, instances, id, token, origin_instance, find;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, _User.validate_email(req)];
+                    case 1:
+                        validate = _a.sent();
+                        if (!validate) return [3 /*break*/, 5];
+                        return [4 /*yield*/, _User.instances(validate.id)
+                            //auth ok
+                        ];
+                    case 2:
+                        instances = _a.sent();
+                        id = validate.id;
+                        token = jsonwebtoken_1.default.sign({ user: validate }, secret, {
+                            expiresIn: (60 * 60 * 24 * 365 * 10) // expires in 10 years
+                        });
+                        origin_instance = req.headers.origin_instance;
+                        if (!origin_instance) return [3 /*break*/, 4];
+                        return [4 /*yield*/, _User.auth_origin_instance(validate, origin_instance)];
+                    case 3:
+                        find = _a.sent();
+                        if (!find) {
+                            origin_instance = false;
+                        }
+                        else {
+                            origin_instance = {
+                                instance_id: origin_instance.instance_id,
+                                user_id_instance: find.user_id_instance
+                            };
+                        }
+                        if (instances.goto)
+                            return [2 /*return*/, res.json({ goto: instances.goto })];
                         _a.label = 4;
                     case 4: return [2 /*return*/, res.json({ auth: true, token: token, user: validate, instances: instances, origin_instance: origin_instance })];
                     case 5:
@@ -110,13 +156,13 @@ exports.default = {
             return __generator(this, function (_b) {
                 _a = req.query, token = _a.token, instance = _a.instance;
                 token = token || req.headers['authorization'] || '';
-                instance = instance || req.headers['instance'] || false;
+                instance = instance || req.headers['instance'] || (req.headers['origin_instance'] ? req.headers['origin_instance']['instance_id'] : false) || false;
                 console.log('=====token', req.headers);
                 if (!token)
                     return [2 /*return*/, res.status(401).json({ auth: false, message: 'No token provided.' })];
                 jsonwebtoken_1.default.verify(token, secret, function (err, decoded) {
                     if (err)
-                        return res.status(500).json({ auth: false, message: '!Failed to authenticate token.' });
+                        return res.status(203).json({ auth: false, message: '!Failed to authenticate token.' });
                     return res.status(200).json(decoded);
                 });
                 return [2 /*return*/];
@@ -131,7 +177,7 @@ exports.default = {
                 global._permissions.clear();
                 token = token || req.headers['authorization'] || "Bearer ";
                 token = token.replace('Bearer ', '');
-                instance = instance || req.headers['instance'] || false;
+                instance = instance || req.headers['instance'] || (req.headers.origin_instance ? req.headers.origin_instance.instance_id : false) || false;
                 jsonwebtoken_1.default.verify(token, secret, function (err, decoded) {
                     return __awaiter(this, void 0, void 0, function () {
                         var permissions, i, module, items, m;
@@ -139,7 +185,7 @@ exports.default = {
                             switch (_a.label) {
                                 case 0:
                                     if (err)
-                                        return [2 /*return*/, res.status(500).json({ auth: false, decoded: decoded, message: 'Failed to authenticate token!!!' })];
+                                        return [2 /*return*/, res.status(203).json({ auth: false, decoded: decoded, message: 'Failed to authenticate token!!!' })];
                                     if (instance == 'null') {
                                         res.status(201).json({ auth: false, decoded: decoded, error: {
                                                 message: 'Instance not found!'
@@ -191,7 +237,7 @@ exports.default = {
             return __generator(this, function (_b) {
                 _a = req.query, token = _a.token, instance = _a.instance;
                 token = token || req.headers['authorization'] || false;
-                instance = instance || req.headers['instance'] || false;
+                instance = instance || req.headers['instance'] || (req.headers.origin_instance ? req.headers['origin_instance']['instance_id'] : false) || false;
                 console.log('=====token', req.headers);
                 // var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYmxhaCI6WzEsMiw1XSwiaWF0IjoxNjAyNjc2Mjg1LCJleHAiOjE5MTgwMzYyODV9._X1_onaUIJ8PsOZYh9A7ppOOjs3i8EaOR9W-zqqRkrA';
                 if (!token)
@@ -200,16 +246,14 @@ exports.default = {
                 console.log(token);
                 jsonwebtoken_1.default.verify(token, secret, function (err, decoded) {
                     if (err)
-                        return res.status(500).json({ auth: false, decoded: decoded, message: 'Failed to authenticate token!' });
-                    //   return res.status(200).json(decoded)
-                    req.params.storage = {
-                        user: decoded.user,
-                        instance: instance || decoded.instance_id
-                    };
+                        return res.status(201).json({ auth: false, decoded: decoded, message: 'Failed to authenticate token!' });
                     global.storage = {
                         instance: instance || decoded.instance_id,
-                        user: decoded.user
+                        user: decoded.user,
+                        request: req,
+                        protocol: req.protocol
                     };
+                    console.log("decoded.user:::", decoded.user);
                     next();
                 });
                 return [2 /*return*/];
@@ -219,7 +263,7 @@ exports.default = {
     ok: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, res.status(500).json()];
+                return [2 /*return*/, res.status(203).json()];
             });
         });
     }

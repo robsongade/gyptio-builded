@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -92,7 +93,7 @@ exports.default = {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        user = req.params.storage.user;
+                        user = global.storage.user;
                         return [4 /*yield*/, typeorm_1.getRepository(InstanceRelation_1.InstanceRelation).find({
                                 join: {
                                     alias: "instances_relational",
@@ -139,7 +140,6 @@ exports.default = {
                     case 1:
                         instances_relational = _a.sent();
                         instances_relational = instances_relational.filter(function (instance) { return instance.status == 'user_instance_actived'; });
-                        console.log("storage:::", req.params.storage);
                         console.log("LISENSE:::", process.env.LICENSE);
                         res.status(201).json({ all_instances: instances_relational });
                         return [3 /*break*/, 3];
@@ -161,7 +161,7 @@ exports.default = {
                     case 0:
                         instanceRepository = typeorm_1.getRepository(Instance_1.Instance);
                         _a = req.body, name = _a.name, description = _a.description;
-                        user = req.params.storage.user;
+                        user = global.storage.user;
                         data = {
                             name: name,
                             user: user,
@@ -257,7 +257,7 @@ exports.default = {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        user = req.params.storage.user;
+                        user = global.storage.user;
                         instance_id = req.params.instance_id;
                         return [4 /*yield*/, Instance_1.Instance.findOne({
                                 where: {
@@ -286,7 +286,7 @@ exports.default = {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        user = req.params.storage.user;
+                        user = global.storage.user;
                         user_id_instance = req.params.user_id_instance;
                         console.log("user_relational:::", user_id_instance);
                         return [4 /*yield*/, InstanceRelation_1.InstanceRelation.findOne({
@@ -315,7 +315,7 @@ exports.default = {
                     case 0:
                         console.log("user_instance:::", "user_instance");
                         user_id = req.params.user_id;
-                        _a = req.params.storage, instance = _a.instance, user = _a.user;
+                        _a = global.storage, instance = _a.instance, user = _a.user;
                         console.log("user_instance:::", instance, req.params);
                         console.log("user:::", user);
                         InstanceRepositiory = typeorm_1.getRepository(Instance_1.Instance);
@@ -362,7 +362,7 @@ exports.default = {
                     case 0:
                         console.log("user_instance:::", "user_instance");
                         user_id = req.params.user_id;
-                        instance = req.params.storage.instance;
+                        instance = global.storage.instance;
                         console.log("user_instance:::", instance, req.params);
                         InstanceRepositiory = typeorm_1.getRepository(Instance_1.Instance);
                         return [4 /*yield*/, InstanceRepositiory.findOne({
@@ -399,15 +399,17 @@ exports.default = {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!req.headers.origin) {
+                        origin = req.headers.origin || req.headers.referer || req.headers.host || false;
+                        if (!origin) {
+                            console.log("====================");
+                            console.log("====================AFF1");
+                            console.log("====================AFF1", req.headers);
                             next();
                             return [2 /*return*/];
                         }
-                        origin = req.headers.origin;
                         split1 = origin.split("//");
                         if (split1.length < 2) {
-                            next();
-                            return [2 /*return*/];
+                            split1 = [null, split1[0] + ":"];
                         }
                         domain_origin = split1[1].split(":")[0];
                         console.log("====================");
@@ -423,16 +425,25 @@ exports.default = {
                                 } }).getOne()];
                     case 1:
                         instanceRepository = _a.sent();
-                        console.log("====================1");
+                        console.log("====================1", { sites: [
+                                {
+                                    url: domain_origin,
+                                    txt: true
+                                }
+                            ] });
                         if (instanceRepository) {
-                            console.log("====================2");
                             new_data = {
                                 domain: domain_origin,
                                 instance_id: instanceRepository.instance_id,
                                 id: instanceRepository.id
                             };
+                            global.storage = {
+                                instance: instanceRepository.instance_id,
+                                user: null,
+                                protocol: req.protocol,
+                                request: req
+                            };
                             req.headers.origin_instance = new_data;
-                            console.log("asd", domain_origin);
                         }
                         next();
                         return [2 /*return*/];
@@ -461,7 +472,8 @@ exports.default = {
                         }
                         res.send({
                             data: data,
-                            checked: is_ok
+                            checked: is_ok,
+                            error: error
                         });
                     });
                 }

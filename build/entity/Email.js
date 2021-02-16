@@ -22,45 +22,53 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Module = void 0;
+exports.Email = void 0;
 var typeorm_1 = require("typeorm");
-var GroupPermissionItem_1 = require("./GroupPermissionItem");
-var Module = /** @class */ (function (_super) {
-    __extends(Module, _super);
-    function Module() {
+var Instance_1 = require("./Instance");
+var Email = /** @class */ (function (_super) {
+    __extends(Email, _super);
+    function Email() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
         __metadata("design:type", Number)
-    ], Module.prototype, "id", void 0);
+    ], Email.prototype, "id", void 0);
     __decorate([
         typeorm_1.Column({
-            length: 50
+            nullable: false
         }),
         __metadata("design:type", String)
-    ], Module.prototype, "name", void 0);
+    ], Email.prototype, "from", void 0);
     __decorate([
         typeorm_1.Column({
-            length: 255,
-            nullable: true
+            nullable: false
         }),
         __metadata("design:type", String)
-    ], Module.prototype, "description", void 0);
+    ], Email.prototype, "host", void 0);
     __decorate([
         typeorm_1.Column({
-            length: 20,
-            unique: true
+            nullable: false
         }),
         __metadata("design:type", String)
-    ], Module.prototype, "code", void 0);
+    ], Email.prototype, "username", void 0);
     __decorate([
-        typeorm_1.OneToMany(function (type) { return GroupPermissionItem_1.GroupPermissionItem; }, function (group_permission_item) { return group_permission_item.module; }),
+        typeorm_1.Column({
+            nullable: false
+        }),
+        __metadata("design:type", String)
+    ], Email.prototype, "password", void 0);
+    __decorate([
+        typeorm_1.ManyToOne(function (type) { return Instance_1.Instance; }, function (instance) { return instance.email; }),
         __metadata("design:type", Array)
-    ], Module.prototype, "groups_permission_item", void 0);
-    Module = __decorate([
+    ], Email.prototype, "instance", void 0);
+    __decorate([
+        typeorm_1.RelationId(function (email) { return email.instance; }),
+        __metadata("design:type", String)
+    ], Email.prototype, "instanceId", void 0);
+    Email = __decorate([
         typeorm_1.Entity()
-    ], Module);
-    return Module;
+    ], Email);
+    return Email;
 }(typeorm_1.BaseEntity));
-exports.Module = Module;
+exports.Email = Email;

@@ -3,7 +3,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -22,6 +22,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.InstanceRelation = exports.InstanceRelationalEmail = exports.InstanceRelationalStatus = void 0;
 var typeorm_1 = require("typeorm");
 var User_1 = require("./User");
 var Instance_1 = require("./Instance");
@@ -34,6 +35,11 @@ var InstanceRelationalStatus;
     InstanceRelationalStatus["ACTIVED"] = "user_instance_actived";
     InstanceRelationalStatus["REPROVED"] = "user_instance_reproved";
 })(InstanceRelationalStatus = exports.InstanceRelationalStatus || (exports.InstanceRelationalStatus = {}));
+var InstanceRelationalEmail;
+(function (InstanceRelationalEmail) {
+    InstanceRelationalEmail["PENDING"] = "pending_email";
+    InstanceRelationalEmail["VERIFIED"] = "verified_email";
+})(InstanceRelationalEmail = exports.InstanceRelationalEmail || (exports.InstanceRelationalEmail = {}));
 var InstanceRelation = /** @class */ (function (_super) {
     __extends(InstanceRelation, _super);
     function InstanceRelation() {
@@ -53,9 +59,24 @@ var InstanceRelation = /** @class */ (function (_super) {
         __metadata("design:type", User_1.User)
     ], InstanceRelation.prototype, "user", void 0);
     __decorate([
+        typeorm_1.Column({
+            type: "bool",
+            default: false
+        }),
+        __metadata("design:type", Boolean)
+    ], InstanceRelation.prototype, "validated_email", void 0);
+    __decorate([
         typeorm_1.ManyToOne(function (type) { return Instance_1.Instance; }, function (instance) { return instance.instances_relation; }),
         __metadata("design:type", Instance_1.Instance)
     ], InstanceRelation.prototype, "instance", void 0);
+    __decorate([
+        typeorm_1.Column({
+            type: "enum",
+            default: InstanceRelationalEmail.PENDING,
+            enum: InstanceRelationalEmail,
+        }),
+        __metadata("design:type", String)
+    ], InstanceRelation.prototype, "status_email", void 0);
     __decorate([
         typeorm_1.Column({
             type: "enum",

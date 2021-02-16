@@ -22,45 +22,48 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Module = void 0;
+exports.Characters = exports.TypeCharacters = void 0;
 var typeorm_1 = require("typeorm");
-var GroupPermissionItem_1 = require("./GroupPermissionItem");
-var Module = /** @class */ (function (_super) {
-    __extends(Module, _super);
-    function Module() {
+var Character_1 = require("../Character/Character");
+var TypeCharacters;
+(function (TypeCharacters) {
+    TypeCharacters["Archer"] = "Archer";
+    TypeCharacters["Paladin"] = "Paladin";
+    TypeCharacters["Lancer"] = "Lancer";
+    TypeCharacters["Berserker"] = "Berserker";
+})(TypeCharacters = exports.TypeCharacters || (exports.TypeCharacters = {}));
+var Characters = /** @class */ (function (_super) {
+    __extends(Characters, _super);
+    function Characters() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
         __metadata("design:type", Number)
-    ], Module.prototype, "id", void 0);
+    ], Characters.prototype, "id", void 0);
     __decorate([
         typeorm_1.Column({
-            length: 50
+            type: 'enum',
+            enum: TypeCharacters,
+            default: TypeCharacters.Archer
         }),
         __metadata("design:type", String)
-    ], Module.prototype, "name", void 0);
+    ], Characters.prototype, "type", void 0);
     __decorate([
-        typeorm_1.Column({
-            length: 255,
-            nullable: true
-        }),
-        __metadata("design:type", String)
-    ], Module.prototype, "description", void 0);
-    __decorate([
-        typeorm_1.Column({
-            length: 20,
-            unique: true
-        }),
-        __metadata("design:type", String)
-    ], Module.prototype, "code", void 0);
-    __decorate([
-        typeorm_1.OneToMany(function (type) { return GroupPermissionItem_1.GroupPermissionItem; }, function (group_permission_item) { return group_permission_item.module; }),
+        typeorm_1.OneToMany(function (data) { return Character_1.Character; }, function (data) { return data.characters; }),
         __metadata("design:type", Array)
-    ], Module.prototype, "groups_permission_item", void 0);
-    Module = __decorate([
+    ], Characters.prototype, "character", void 0);
+    __decorate([
+        typeorm_1.CreateDateColumn(),
+        __metadata("design:type", Date)
+    ], Characters.prototype, "created_at", void 0);
+    __decorate([
+        typeorm_1.UpdateDateColumn(),
+        __metadata("design:type", Date)
+    ], Characters.prototype, "updated_at", void 0);
+    Characters = __decorate([
         typeorm_1.Entity()
-    ], Module);
-    return Module;
+    ], Characters);
+    return Characters;
 }(typeorm_1.BaseEntity));
-exports.Module = Module;
+exports.Characters = Characters;

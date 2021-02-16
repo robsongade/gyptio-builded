@@ -1,9 +1,21 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -38,6 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserController = void 0;
 var typeorm_1 = require("typeorm");
 var User_1 = require("../entity/User");
 var UserEntity = User_1.User;
@@ -50,6 +63,9 @@ var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var Group_1 = require("../entity/Group");
 var InstanceRelationGroup_1 = require("../entity/InstanceRelationGroup");
 var Permission_1 = __importDefault(require("./Permission"));
+var EmailController_1 = __importDefault(require("./modules/Email/EmailController"));
+var secret = process.env.SECRET || 'secret';
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var UserController = /** @class */ (function () {
     function UserController() {
         var _this = this;
@@ -72,7 +88,7 @@ var UserController = /** @class */ (function () {
                         return [4 /*yield*/, userRepository.save(new_user)];
                     case 1:
                         save = _b.sent();
-                        if (!origin_instance) return [3 /*break*/, 4];
+                        if (!origin_instance) return [3 /*break*/, 5];
                         return [4 /*yield*/, Instance_1.Instance.findOne(origin_instance.id)];
                     case 2:
                         instance = _b.sent();
@@ -84,10 +100,23 @@ var UserController = /** @class */ (function () {
                         return [4 /*yield*/, InstanceRelational_1.default.pin(_instanceRelation)];
                     case 3:
                         _b.sent();
-                        _b.label = 4;
+                        return [4 /*yield*/, EmailController_1.default.confirm(email, function (result) {
+                                if (result) {
+                                    response.status(200).json(__assign(__assign({}, save), { success: true, goto: (result.url_dashboard) ? result.url_dashboard + '#/email/confirm?email=' + email : false }));
+                                }
+                                else {
+                                    response.status(200).json({
+                                        error: true
+                                    });
+                                }
+                            })];
                     case 4:
+                        _b.sent();
+                        return [3 /*break*/, 6];
+                    case 5:
                         response.status(200).json(save);
-                        return [2 /*return*/];
+                        _b.label = 6;
+                    case 6: return [2 /*return*/];
                 }
             });
         }); };
@@ -100,7 +129,7 @@ var UserController = /** @class */ (function () {
                         global._permissions['owner'] = result;
                         response.status(200).json({
                             'permissions': global._permissions,
-                            'owner': result
+                            'owner': result,
                         });
                         return [2 /*return*/, result];
                     });
@@ -109,12 +138,12 @@ var UserController = /** @class */ (function () {
             });
         }); };
         this.validate = function (request) { return __awaiter(_this, void 0, void 0, function () {
-            var userRepository, _a, password, email, data, user, check_password;
+            var userRepository, _a, password, email, username, data, user, check_password;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         userRepository = typeorm_1.getRepository(UserEntity);
-                        _a = request.body, password = _a.password, email = _a.email;
+                        _a = request.body, password = _a.password, email = _a.email, username = _a.username;
                         data = {
                             password: password,
                             email: email
@@ -126,17 +155,47 @@ var UserController = /** @class */ (function () {
                                 where: [
                                     {
                                         email: email
-                                    }, {
-                                        username: email
+                                    },
+                                    {
+                                        username: username
                                     }
                                 ]
                             })];
                     case 1:
                         user = _b.sent();
+                        if (!user) {
+                            return [2 /*return*/];
+                        }
                         return [4 /*yield*/, bcryptjs_1.default.compare(password, user.password)];
                     case 2:
                         check_password = _b.sent();
                         if (!user || !check_password) {
+                            return [2 /*return*/];
+                        }
+                        return [2 /*return*/, user];
+                }
+            });
+        }); };
+        this.validate_email = function (request) { return __awaiter(_this, void 0, void 0, function () {
+            var token, userRepository, _a, password, email, username, response_jwt, user;
+            var _this = this;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        token = request.query.token;
+                        userRepository = typeorm_1.getRepository(UserEntity);
+                        _a = request.body, password = _a.password, email = _a.email, username = _a.username;
+                        return [4 /*yield*/, jsonwebtoken_1.default.verify(token, secret, function (err, decoded) { return __awaiter(_this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    return [2 /*return*/, decoded];
+                                });
+                            }); })];
+                    case 1:
+                        response_jwt = _b.sent();
+                        return [4 /*yield*/, userRepository.findOne(response_jwt.user.id)];
+                    case 2:
+                        user = _b.sent();
+                        if (!user) {
                             return [2 /*return*/];
                         }
                         return [2 /*return*/, user];
@@ -148,10 +207,10 @@ var UserController = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        instance = request.params.storage.instance;
+                        instance = global.storage.instance;
                         user_id_instance = request.params.user_id_instance;
                         if (!!user_id_instance) return [3 /*break*/, 1];
-                        user = request.params.storage.user;
+                        user = global.storage.user;
                         return [3 /*break*/, 4];
                     case 1: return [4 /*yield*/, typeorm_1.getRepository(InstanceRelation_1.InstanceRelation).findOne({
                             where: {
@@ -216,7 +275,7 @@ var UserController = /** @class */ (function () {
             var instance, _a, edit_groups, user_id_instance;
             var _this = this;
             return __generator(this, function (_b) {
-                instance = request.params.storage.instance;
+                instance = global.storage.instance;
                 _a = request.body, edit_groups = _a.edit_groups, user_id_instance = _a.user_id_instance;
                 Permission_1.default.set_request(request).check_permission('user', 'edit', function (result) { return __awaiter(_this, void 0, void 0, function () {
                     var findInstance, findInstanceRelational, _a, _b, _i, g, group, findGroup, action, findItem;
@@ -309,7 +368,7 @@ var UserController = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        user = request.params.storage.user;
+                        user = global.storage.user;
                         _a = request.body.userDataEdit, fullName = _a.fullName, username = _a.username, email = _a.email, url_image = _a.url_image, password = _a.password, new_password = _a.new_password;
                         newData = {
                             fullName: fullName,
@@ -340,17 +399,17 @@ var UserController = /** @class */ (function () {
             });
         }); };
         this.users = function (request, response) { return __awaiter(_this, void 0, void 0, function () {
-            var instance, user, user_id, UserRepository, InstanceUserRepository, InstanceRepository;
+            var _a, instance, user, user_id, UserRepository, InstanceUserRepository, InstanceRepository;
             var _this = this;
-            return __generator(this, function (_a) {
-                instance = request.params.storage.instance;
-                user = request.params.storage.user;
+            return __generator(this, function (_b) {
+                _a = global.storage, instance = _a.instance, user = _a.user;
                 user_id = user.id;
                 UserRepository = typeorm_1.getRepository(UserEntity);
                 InstanceUserRepository = typeorm_1.getRepository(InstanceRelation_1.InstanceRelation);
                 InstanceRepository = typeorm_1.getRepository(InstanceEntity);
                 Permission_1.default.set_request(request).check_permission("user", "list", function (result) { return __awaiter(_this, void 0, void 0, function () {
-                    var Instance, _a, _b, _c, instance_user, instance_user_aproves, instance_user_to_accept, users;
+                    var Instance, _a, _b, instance_user, instance_user_aproves, instance_user_to_accept, users;
+                    var _c;
                     return __generator(this, function (_d) {
                         switch (_d.label) {
                             case 0: return [4 /*yield*/, InstanceRepository.findOne({
@@ -414,7 +473,9 @@ var UserController = /** @class */ (function () {
                                 // const users_aproves = await UserRepository.findByIds(instance_user_aproves)
                                 //  const users_to_accept = await UserRepository.findByIds(instance_user_to_accept)
                                 response.status(200).json({
-                                    users: users, instance_user_aproves: instance_user_aproves, instance_user_to_accept: instance_user_to_accept, instance_user: instance_user, instance: instance, instance_id: request.params.storage, Instance: Instance
+                                    users: users, instance_user_aproves: instance_user_aproves, instance_user_to_accept: instance_user_to_accept, instance_user: instance_user, instance: instance,
+                                    instance_id: global.storage.instance,
+                                    Instance: Instance
                                 });
                                 return [2 /*return*/];
                         }
@@ -467,7 +528,7 @@ var UserController = /** @class */ (function () {
     };
     UserController.prototype.instances = function (userId) {
         return __awaiter(this, void 0, void 0, function () {
-            var instanceRepository, instances;
+            var instanceRepository, instances, validated_email, goto, findEmail;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -478,12 +539,38 @@ var UserController = /** @class */ (function () {
                                     user: userId
                                 },
                                 relations: ["user"]
-                            })];
+                            })
+                            //TODO: Fluxo validação email
+                        ];
                     case 1:
                         instances = _a.sent();
-                        return [2 /*return*/, {
-                                instances: instances
-                            }];
+                        return [4 /*yield*/, InstanceRelation_1.InstanceRelation.findOne({
+                                where: {
+                                    user: userId,
+                                    status_email: 'pending_email'
+                                }
+                            })];
+                    case 2:
+                        validated_email = _a.sent();
+                        goto = false;
+                        if (!validated_email) return [3 /*break*/, 5];
+                        return [4 /*yield*/, UserEntity.findOne({
+                                where: {
+                                    id: validated_email.userId
+                                }
+                            })];
+                    case 3:
+                        findEmail = _a.sent();
+                        return [4 /*yield*/, EmailController_1.default.confirm(findEmail.email, function (result) {
+                            })];
+                    case 4:
+                        _a.sent();
+                        goto = "#/email/confirm?error=pendent_email&email=" + findEmail.email;
+                        _a.label = 5;
+                    case 5: return [2 /*return*/, {
+                            instances: instances,
+                            goto: goto
+                        }];
                 }
             });
         });

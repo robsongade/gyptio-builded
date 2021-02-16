@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -41,9 +42,80 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var Instance_1 = require("../../../entity/Instance");
 var ServerGame_1 = require("../../../entity/modules/ServerGame/ServerGame");
+var User_1 = require("../../../entity/User");
+var GlobalData_1 = require("../../../libs/GlobalData");
 var Auth_1 = __importDefault(require("../../Auth"));
 var Permission_1 = __importDefault(require("../../Permission"));
+var globa_data = new GlobalData_1.GlobalData();
 exports.default = {
+    player_validate_token: function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                response.status(200).json({
+                    success: true
+                });
+                return [2 /*return*/];
+            });
+        });
+    },
+    validate_token: function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            var user, findUser, findInstanceMaster, findServers;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        user = globa_data.Storage().user;
+                        console.log("validate_token user:::", user, globa_data.Storage());
+                        return [4 /*yield*/, typeorm_1.getRepository(User_1.User).findOne({
+                                where: {
+                                    id: user.id
+                                }
+                            })];
+                    case 1:
+                        findUser = _a.sent();
+                        if (!findUser) {
+                            return [2 /*return*/, response.status(200).json({
+                                    error: {
+                                        message: 'findUser'
+                                    }
+                                })];
+                        }
+                        return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).findOne({
+                                where: {
+                                    user: findUser,
+                                    type: 'master'
+                                }
+                            })];
+                    case 2:
+                        findInstanceMaster = _a.sent();
+                        if (!findInstanceMaster) {
+                            return [2 /*return*/, response.status(200).json({
+                                    error: {
+                                        message: 'findInstanceMaster'
+                                    }
+                                })];
+                        }
+                        return [4 /*yield*/, typeorm_1.getRepository(ServerGame_1.ServerGame).find({
+                                where: {}
+                            })];
+                    case 3:
+                        findServers = _a.sent();
+                        if (!findServers) {
+                            return [2 /*return*/, response.status(200).json({
+                                    error: {
+                                        message: 'findServers'
+                                    }
+                                })];
+                        }
+                        response.status(200).json({
+                            success: true,
+                            servers: findServers
+                        });
+                        return [2 /*return*/];
+                }
+            });
+        });
+    },
     create: function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
@@ -188,7 +260,8 @@ exports.default = {
                                 return [3 /*break*/, 10];
                             case 10:
                                 response.send({
-                                    success: true, findInstance: findInstance
+                                    success: true,
+                                    findInstance: findInstance
                                 });
                                 return [2 /*return*/];
                         }

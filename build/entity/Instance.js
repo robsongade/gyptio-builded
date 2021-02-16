@@ -3,7 +3,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -22,10 +22,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Instance = exports.InstanceStatus = exports.TypeInstance = void 0;
 var typeorm_1 = require("typeorm");
 var User_1 = require("./User");
 var InstanceRelation_1 = require("./InstanceRelation");
 var Group_1 = require("./Group");
+var Email_1 = require("./Email");
 var TypeInstance;
 (function (TypeInstance) {
     TypeInstance["CHILD"] = "child";
@@ -122,6 +124,12 @@ var Instance = /** @class */ (function (_super) {
         typeorm_1.OneToMany(function (type) { return InstanceRelation_1.InstanceRelation; }, function (instance_relation) { return instance_relation.instance; }),
         __metadata("design:type", Array)
     ], Instance.prototype, "instances_relation", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function (type) { return Email_1.Email; }, function (email) { return email.instance; }),
+        __metadata("design:type", Email_1.Email
+        // in order be able to fetch resources in admin-bro - we have to have id available
+        )
+    ], Instance.prototype, "email", void 0);
     __decorate([
         typeorm_1.RelationId(function (instance) { return instance.user; }),
         __metadata("design:type", String)

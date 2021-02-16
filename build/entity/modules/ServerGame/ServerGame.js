@@ -3,7 +3,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -22,7 +22,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ServerGame = exports.ServerGameStatus = void 0;
 var typeorm_1 = require("typeorm");
+var Player_1 = require("./../Player/Player");
 var ServerGameStatus;
 (function (ServerGameStatus) {
     ServerGameStatus["OFF"] = "server_game_off";
@@ -37,7 +39,7 @@ var ServerGame = /** @class */ (function (_super) {
     }
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
-        __metadata("design:type", String)
+        __metadata("design:type", Number)
     ], ServerGame.prototype, "id", void 0);
     __decorate([
         typeorm_1.Column({
@@ -63,6 +65,18 @@ var ServerGame = /** @class */ (function (_super) {
         }),
         __metadata("design:type", String)
     ], ServerGame.prototype, "status", void 0);
+    __decorate([
+        typeorm_1.CreateDateColumn(),
+        __metadata("design:type", Date)
+    ], ServerGame.prototype, "created_at", void 0);
+    __decorate([
+        typeorm_1.UpdateDateColumn(),
+        __metadata("design:type", Date)
+    ], ServerGame.prototype, "updated_at", void 0);
+    __decorate([
+        typeorm_1.OneToMany(function (player) { return Player_1.Player; }, function (player) { return player.servergame; }),
+        __metadata("design:type", Array)
+    ], ServerGame.prototype, "players", void 0);
     ServerGame = __decorate([
         typeorm_1.Entity()
     ], ServerGame);
