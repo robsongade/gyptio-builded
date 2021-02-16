@@ -43,8 +43,5 @@
       "typeorm": "ts-node node_modules/typeorm/cli.js",
       "migration:generate": "ts-node-dev node_modules/typeorm/cli.js migration:run",
       "migration:run": "ts-node-dev node_modules/typeorm/cli.js migration:run"
-   },
-   "engines": {
-      "node": "14.x"
    }
 }
