@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SocketServer = void 0;
 var http_1 = require("http");
 var SocketServer = /** @class */ (function () {
     function SocketServer() {
