@@ -11,7 +11,7 @@ require("./libs/GioConnector");
 var routes_1 = __importDefault(require("./routes"));
 var handler_1 = __importDefault(require("./errors/handler"));
 var typeorm_1 = require("typeorm");
-var Installer_1 = require("./libs/Installer");
+var installer_1 = require("./libs/installer");
 var run = function () {
     typeorm_1.createConnection().then(function () {
         var cors = require('cors');
@@ -22,7 +22,7 @@ var run = function () {
         app.use(express_1.default.json());
         app.use(routes_1.default);
         app.use(handler_1.default);
-        Installer_1.Installer();
+        installer_1.Installer();
         var port = process.env.PORT || 3003;
         app.listen(port, '0.0.0.0', function () {
             console.log("Server load in port " + port + " ");

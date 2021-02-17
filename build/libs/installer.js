@@ -45,7 +45,7 @@ var InstanceRelation_1 = require("../entity/InstanceRelation");
 var Instance_1 = require("../entity/Instance");
 var User_1 = require("../entity/User");
 var bcryptjs_1 = __importDefault(require("bcryptjs"));
-var Module_1 = require("./../entity/Module");
+var Module_1 = require("../entity/Module");
 var Group_1 = require("../entity/Group");
 var InstallerGenerator = /** @class */ (function () {
     function InstallerGenerator() {
