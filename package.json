@@ -34,7 +34,7 @@
       "uuid": "^8.3.2"
    },
    "scripts": {
-      "prestart": "tsc",
+      "backprestart": "tsc",
       "dev": "ts-node-dev --transpile-only --ignore-watch node_modules src/index.ts",
       "build": "tsc",
       "start": "node build/index.js",
