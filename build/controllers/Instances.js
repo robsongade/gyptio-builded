@@ -395,7 +395,7 @@ exports.default = {
     },
     instance_origin: function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var origin, split1, domain_origin, instanceRepository, new_data;
+            var origin, split1, domain_origin, instanceRepository, site_txt_is_active, x, new_data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -411,27 +411,24 @@ exports.default = {
                         if (split1.length < 2) {
                             split1 = [null, split1[0] + ":"];
                         }
-                        domain_origin = split1[1].split(":")[0];
-                        console.log("====================");
+                        domain_origin = split1[1].split(":")[0].split("/")[0];
                         return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance)
-                                .createQueryBuilder("instance").
-                                where("config @> :config", { config: {
-                                    sites: [
-                                        {
-                                            url: domain_origin,
-                                            txt: true
-                                        }
-                                    ]
-                                } }).getOne()];
+                                .createQueryBuilder("instance")
+                                .where("instance.config::text like :url", { url: "%" + domain_origin + "%" })
+                                .getOne()];
                     case 1:
                         instanceRepository = _a.sent();
-                        console.log("====================1", { sites: [
-                                {
-                                    url: domain_origin,
-                                    txt: true
-                                }
-                            ] });
                         if (instanceRepository) {
+                            site_txt_is_active = false;
+                            for (x = 0; x < instanceRepository.config.sites.length; x++) {
+                                if (instanceRepository.config.sites[x].url == domain_origin && instanceRepository.config.sites[x].txt && instanceRepository.config.sites[x].txt.toString() == 'true') {
+                                    site_txt_is_active = true;
+                                }
+                            }
+                            if (!site_txt_is_active) {
+                                next();
+                                return [2 /*return*/, false];
+                            }
                             new_data = {
                                 domain: domain_origin,
                                 instance_id: instanceRepository.instance_id,

@@ -56,7 +56,7 @@ var InstallerGenerator = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         username = process.env.GYPTIO_USERNAME_MASTER || 'admin';
-                        email = process.env.GYPTIO_USERNAME_MASTER || 'admin@example.com';
+                        email = process.env.GYPTIO_EMAIL_MASTER || 'admin@example.com';
                         password = process.env.GYPTIO_PASSWORD_MASTER || 'root';
                         role = User_1.UserRoles.STAFF;
                         salt = bcryptjs_1.default.genSaltSync(10);

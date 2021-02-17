@@ -80,8 +80,9 @@ var EmailController = {
                             })];
                     case 2:
                         config_email = _a.sent();
-                        if (!config_email)
+                        if (!config_email) {
                             return [2 /*return*/, false];
+                        }
                         from = config_email.from, host = config_email.host, username = config_email.username, password = config_email.password;
                         EmailController.from = from;
                         EmailController.transport = nodemailer_1.default.createTransport({

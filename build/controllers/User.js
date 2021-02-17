@@ -70,7 +70,7 @@ var UserController = /** @class */ (function () {
     function UserController() {
         var _this = this;
         this.create = function (request, response) { return __awaiter(_this, void 0, void 0, function () {
-            var userRepository, _a, username, password, email, origin_instance, role, data, new_user, save, instance, _instanceRelation;
+            var userRepository, _a, username, password, email, origin_instance, role, data, new_user, save, instance, _instanceRelation, config_email;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -88,7 +88,7 @@ var UserController = /** @class */ (function () {
                         return [4 /*yield*/, userRepository.save(new_user)];
                     case 1:
                         save = _b.sent();
-                        if (!origin_instance) return [3 /*break*/, 5];
+                        if (!origin_instance) return [3 /*break*/, 8];
                         return [4 /*yield*/, Instance_1.Instance.findOne(origin_instance.id)];
                     case 2:
                         instance = _b.sent();
@@ -100,9 +100,13 @@ var UserController = /** @class */ (function () {
                         return [4 /*yield*/, InstanceRelational_1.default.pin(_instanceRelation)];
                     case 3:
                         _b.sent();
+                        return [4 /*yield*/, EmailController_1.default.config()];
+                    case 4:
+                        config_email = _b.sent();
+                        if (!config_email) return [3 /*break*/, 6];
                         return [4 /*yield*/, EmailController_1.default.confirm(email, function (result) {
                                 if (result) {
-                                    response.status(200).json(__assign(__assign({}, save), { success: true, goto: (result.url_dashboard) ? result.url_dashboard + '#/email/confirm?email=' + email : false }));
+                                    response.status(200).json(__assign(__assign({}, save), { success: true, goto: (result.url_dashboard) ? result.url_dashboard + '/email/confirm?email=' + email : false }));
                                 }
                                 else {
                                     response.status(200).json({
@@ -110,13 +114,17 @@ var UserController = /** @class */ (function () {
                                     });
                                 }
                             })];
-                    case 4:
-                        _b.sent();
-                        return [3 /*break*/, 6];
                     case 5:
+                        _b.sent();
+                        return [3 /*break*/, 7];
+                    case 6:
+                        response.status(200).json(__assign(__assign({}, save), { success: true, goto: "/" }));
+                        _b.label = 7;
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
                         response.status(200).json(save);
-                        _b.label = 6;
-                    case 6: return [2 /*return*/];
+                        _b.label = 9;
+                    case 9: return [2 /*return*/];
                 }
             });
         }); };
@@ -553,7 +561,7 @@ var UserController = /** @class */ (function () {
                     case 2:
                         validated_email = _a.sent();
                         goto = false;
-                        if (!validated_email) return [3 /*break*/, 7];
+                        if (!validated_email) return [3 /*break*/, 6];
                         return [4 /*yield*/, UserEntity.findOne({
                                 where: {
                                     id: validated_email.userId
@@ -570,12 +578,9 @@ var UserController = /** @class */ (function () {
                             })];
                     case 5:
                         result = _a.sent();
-                        goto = "#/email/confirm?error=pendent_email&email=" + findEmail.email;
-                        return [3 /*break*/, 7];
-                    case 6:
-                        goto = "#/";
-                        _a.label = 7;
-                    case 7: return [2 /*return*/, {
+                        goto = "/email/confirm?error=pendent_email&email=" + findEmail.email;
+                        _a.label = 6;
+                    case 6: return [2 /*return*/, {
                             instances: instances,
                             goto: goto
                         }];
