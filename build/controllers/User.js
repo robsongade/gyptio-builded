@@ -11,10 +11,11 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -49,6 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserController = void 0;
 var typeorm_1 = require("typeorm");
 var User_1 = require("../entity/User");
 var UserEntity = User_1.User;
@@ -100,7 +102,7 @@ var UserController = /** @class */ (function () {
                         _b.sent();
                         return [4 /*yield*/, EmailController_1.default.confirm(email, function (result) {
                                 if (result) {
-                                    response.status(200).json(__assign({}, save, { success: true, goto: (result.url_dashboard) ? result.url_dashboard + '#/email/confirm?email=' + email : false }));
+                                    response.status(200).json(__assign(__assign({}, save), { success: true, goto: (result.url_dashboard) ? result.url_dashboard + '#/email/confirm?email=' + email : false }));
                                 }
                                 else {
                                     response.status(200).json({
@@ -153,7 +155,8 @@ var UserController = /** @class */ (function () {
                                 where: [
                                     {
                                         email: email
-                                    }, {
+                                    },
+                                    {
                                         username: username
                                     }
                                 ]
@@ -405,7 +408,8 @@ var UserController = /** @class */ (function () {
                 InstanceUserRepository = typeorm_1.getRepository(InstanceRelation_1.InstanceRelation);
                 InstanceRepository = typeorm_1.getRepository(InstanceEntity);
                 Permission_1.default.set_request(request).check_permission("user", "list", function (result) { return __awaiter(_this, void 0, void 0, function () {
-                    var Instance, _a, _b, _c, instance_user, instance_user_aproves, instance_user_to_accept, users;
+                    var Instance, _a, _b, instance_user, instance_user_aproves, instance_user_to_accept, users;
+                    var _c;
                     return __generator(this, function (_d) {
                         switch (_d.label) {
                             case 0: return [4 /*yield*/, InstanceRepository.findOne({
@@ -469,7 +473,9 @@ var UserController = /** @class */ (function () {
                                 // const users_aproves = await UserRepository.findByIds(instance_user_aproves)
                                 //  const users_to_accept = await UserRepository.findByIds(instance_user_to_accept)
                                 response.status(200).json({
-                                    users: users, instance_user_aproves: instance_user_aproves, instance_user_to_accept: instance_user_to_accept, instance_user: instance_user, instance: instance, instance_id: global.storage.instance, Instance: Instance
+                                    users: users, instance_user_aproves: instance_user_aproves, instance_user_to_accept: instance_user_to_accept, instance_user: instance_user, instance: instance,
+                                    instance_id: global.storage.instance,
+                                    Instance: Instance
                                 });
                                 return [2 /*return*/];
                         }
@@ -522,7 +528,7 @@ var UserController = /** @class */ (function () {
     };
     UserController.prototype.instances = function (userId) {
         return __awaiter(this, void 0, void 0, function () {
-            var instanceRepository, instances, validated_email, goto, findEmail;
+            var instanceRepository, instances, validated_email, goto, findEmail, config_email, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -547,7 +553,7 @@ var UserController = /** @class */ (function () {
                     case 2:
                         validated_email = _a.sent();
                         goto = false;
-                        if (!validated_email) return [3 /*break*/, 5];
+                        if (!validated_email) return [3 /*break*/, 7];
                         return [4 /*yield*/, UserEntity.findOne({
                                 where: {
                                     id: validated_email.userId
@@ -555,13 +561,21 @@ var UserController = /** @class */ (function () {
                             })];
                     case 3:
                         findEmail = _a.sent();
-                        return [4 /*yield*/, EmailController_1.default.confirm(findEmail.email, function (result) {
-                            })];
+                        return [4 /*yield*/, EmailController_1.default.config()];
                     case 4:
-                        _a.sent();
+                        config_email = _a.sent();
+                        if (!config_email) return [3 /*break*/, 6];
+                        return [4 /*yield*/, EmailController_1.default.confirm(findEmail.email, function (result) {
+                                return false;
+                            })];
+                    case 5:
+                        result = _a.sent();
                         goto = "#/email/confirm?error=pendent_email&email=" + findEmail.email;
-                        _a.label = 5;
-                    case 5: return [2 /*return*/, {
+                        return [3 /*break*/, 7];
+                    case 6:
+                        goto = "#/";
+                        _a.label = 7;
+                    case 7: return [2 /*return*/, {
                             instances: instances,
                             goto: goto
                         }];

@@ -19946,13 +19946,13 @@ const vue = {
         async auth(){
         
         try{
-            var response;
+            
 
             if(this.$route.query.token){
-               response = await this.user.AuthEmail(this.$route.query.token)
+              var response = await this.user.AuthEmail(this.$route.query.token)
                
             }else{
-               response = await this.user.Auth({
+               var response = await this.user.Auth({
                 email : this.username,
                 username : this.username,
                 password : this.password
@@ -19966,6 +19966,7 @@ const vue = {
             }
             const {origin_instance} = response
             var has_token = this.$route.query.token;
+             
             if(origin_instance){
               
               await this.instance.Instances();
@@ -19984,13 +19985,12 @@ const vue = {
               return
               
             }
-            
+           
             if(response.goto){
               if(this.$route.query.token){
                 response.goto += "?email=ok";
               }
-              
-              if(response.goto) this.$router.go(response.goto)
+              if(response.goto) this.$router.push(response.goto)
               
             }
             
@@ -27582,9 +27582,9 @@ var staticRenderFns = []
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/Views/Layouts/Guest/Login.vue?vue&type=template&id=4ce0b75c&":
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/Views/Layouts/Guest/Login.vue?vue&type=template&id=b8155dc6&":
 /*!********************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/Views/Layouts/Guest/Login.vue?vue&type=template&id=4ce0b75c& ***!
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./src/Views/Layouts/Guest/Login.vue?vue&type=template&id=b8155dc6& ***!
   \********************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -42370,7 +42370,7 @@ module.exports = content.locals || {};
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Login_vue_vue_type_template_id_4ce0b75c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Login.vue?vue&type=template&id=4ce0b75c& */ "./src/Views/Layouts/Guest/Login.vue?vue&type=template&id=4ce0b75c&");
+/* harmony import */ var _Login_vue_vue_type_template_id_b8155dc6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Login.vue?vue&type=template&id=b8155dc6& */ "./src/Views/Layouts/Guest/Login.vue?vue&type=template&id=b8155dc6&");
 /* harmony import */ var _Login_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Login.vue?vue&type=script&lang=js& */ "./src/Views/Layouts/Guest/Login.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
@@ -42382,8 +42382,8 @@ __webpack_require__.r(__webpack_exports__);
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
   _Login_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _Login_vue_vue_type_template_id_4ce0b75c___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _Login_vue_vue_type_template_id_4ce0b75c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _Login_vue_vue_type_template_id_b8155dc6___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Login_vue_vue_type_template_id_b8155dc6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -42409,19 +42409,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/Views/Layouts/Guest/Login.vue?vue&type=template&id=4ce0b75c&":
+/***/ "./src/Views/Layouts/Guest/Login.vue?vue&type=template&id=b8155dc6&":
 /*!**************************************************************************!*\
-  !*** ./src/Views/Layouts/Guest/Login.vue?vue&type=template&id=4ce0b75c& ***!
+  !*** ./src/Views/Layouts/Guest/Login.vue?vue&type=template&id=b8155dc6& ***!
   \**************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Login_vue_vue_type_template_id_4ce0b75c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Login.vue?vue&type=template&id=4ce0b75c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/Views/Layouts/Guest/Login.vue?vue&type=template&id=4ce0b75c&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Login_vue_vue_type_template_id_4ce0b75c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Login_vue_vue_type_template_id_b8155dc6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Login.vue?vue&type=template&id=b8155dc6& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./src/Views/Layouts/Guest/Login.vue?vue&type=template&id=b8155dc6&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Login_vue_vue_type_template_id_b8155dc6___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Login_vue_vue_type_template_id_4ce0b75c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Login_vue_vue_type_template_id_b8155dc6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -45157,12 +45157,7 @@ AXIOS_API.interceptors.response.use(
       store.dispatch('ApiRequest',false)
       
     },500)
-    const {goto} = response.data;
-    if(goto){
-     window.location = goto;
-     
-      return;
-    }
+   
     return response
   },
   (error) => {
@@ -45892,6 +45887,7 @@ class ApiUser extends Api {
     }
     async Auth (sendData) {
       const response = await this.post('/auth', sendData)
+      debugger
       return this.proccess_response_auth(response)
     }
     async AuthEmail (token) {

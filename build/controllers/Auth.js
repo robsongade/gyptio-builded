@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -61,10 +62,11 @@ exports.default = {
                         validate = _a.sent();
                         if (!validate) return [3 /*break*/, 5];
                         console.log("validate:::", validate);
-                        return [4 /*yield*/, _User.instances(validate.id)];
+                        return [4 /*yield*/, _User.instances(validate.id)
+                            //auth ok
+                        ];
                     case 2:
                         instances = _a.sent();
-                        console.log("validate:::", validate);
                         id = validate.id;
                         token = jsonwebtoken_1.default.sign({ user: validate }, secret, {
                             expiresIn: (60 * 60 * 24 * 365 * 10) // expires in 10 years
@@ -86,7 +88,9 @@ exports.default = {
                         if (instances.goto)
                             return [2 /*return*/, res.json({ goto: instances.goto })];
                         _a.label = 4;
-                    case 4: return [2 /*return*/, res.json({ auth: true, token: token, user: validate, instances: instances, origin_instance: origin_instance })];
+                    case 4:
+                        console.log("validate2:::", validate);
+                        return [2 /*return*/, res.json({ auth: true, token: token, user: validate, instances: instances, origin_instance: origin_instance, goto: instances.goto })];
                     case 5:
                         res.status(201).json({ error: 'Login inválido!' });
                         return [2 /*return*/];
