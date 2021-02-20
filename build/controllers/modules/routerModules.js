@@ -25,7 +25,7 @@ routerModules.post('/player/characters', Player_1.default.characters);
 routerModules.post('/player/create', Player_1.default.create);
 //Email
 var EmailController_1 = __importDefault(require("./Email/EmailController"));
-routerModules.get('/email/test', EmailController_1.default.get);
 routerModules.get('/email/forgot-password', EmailController_1.default.forgot_password);
 routerModules.get('/email/confirm', EmailController_1.default.confirm_email);
+routerModules.get('/email/test', EmailController_1.default.test);
 exports.default = routerModules;

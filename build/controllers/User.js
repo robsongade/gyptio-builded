@@ -106,7 +106,7 @@ var UserController = /** @class */ (function () {
                         if (!config_email) return [3 /*break*/, 6];
                         return [4 /*yield*/, EmailController_1.default.confirm(email, function (result) {
                                 if (result) {
-                                    response.status(200).json(__assign(__assign({}, save), { success: true, goto: (result.url_dashboard) ? result.url_dashboard + '/email/confirm?email=' + email : false }));
+                                    response.status(200).json(__assign(__assign({}, save), { success: true, goto: (result.url_dashboard) ? '/email/confirm?email=' + email : false }));
                                 }
                                 else {
                                     response.status(200).json({

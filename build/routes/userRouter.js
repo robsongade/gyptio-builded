@@ -10,6 +10,17 @@ var Instances_1 = __importDefault(require("../controllers/Instances"));
 var Router = express_1.default.Router;
 var userRouter = Router();
 var User = new User_1.UserController();
+var express_recaptcha_1 = require("express-recaptcha");
+var recaptcha = new express_recaptcha_1.RecaptchaV2('6LeIx1waAAAAABS77aDV72YU6nIioHEzPJhmIY_O', '6LeIx1waAAAAADNkavv-6o9sDvawHHSY0bTOGcSX');
+userRouter.use('/register', recaptcha.middleware.verify, function (req, res, next) {
+    if (!req.recaptcha.error) {
+        // success code
+        next();
+    }
+    else {
+        return res.send({ error: { message: "recaptcha error" } });
+    }
+});
 userRouter.post('/register', User.create);
 userRouter.get('/user/permissions', Auth_1.default.permission, Auth_1.default.authorize, User.permission);
 userRouter.post('/user', Auth_1.default.permission, Auth_1.default.authorize, User.users);

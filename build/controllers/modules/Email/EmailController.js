@@ -51,14 +51,56 @@ var secret = process.env.SECRET || 'secret';
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var InstanceRelation_1 = require("../../../entity/InstanceRelation");
 var EmailController = {
+    anti_spam: {},
     transport: null,
     from: '',
+    //TODO: criar fluxo de email definir se vai ficar ou não em memoria caso criar processo para 
+    //liberar memoria
+    run_anti_spam: function (instance, user_id) {
+        if (instance === void 0) { instance = null; }
+        if (user_id === void 0) { user_id = null; }
+        if (!instance || !user_id) {
+            if (global.storage.instance) {
+                instance = global.storage.instance;
+            }
+            if (global.storage.user && global.storage.user.id) {
+                user_id = global.storage.user.id;
+            }
+            if (!instance || !user_id) {
+                return;
+            }
+        }
+        if (!EmailController.anti_spam[instance]) {
+            EmailController.anti_spam[instance] = {};
+        }
+        if (!EmailController.anti_spam[instance][user_id]) {
+            EmailController.anti_spam[instance][user_id] = {};
+        }
+        var now = new Date();
+        if (!EmailController.anti_spam[instance][user_id]['next_email']) {
+            EmailController.anti_spam[instance][user_id]['next_email'] = {
+                time: now
+            };
+        }
+        if (now >= EmailController.anti_spam[instance][user_id]['next_email'].time) {
+            now.setMinutes(now.getMinutes() + 5);
+            EmailController.anti_spam[instance][user_id]['next_email'] = {
+                time: now
+            };
+            EmailController.anti_spam[instance][user_id].released = true;
+        }
+        else {
+            EmailController.anti_spam[instance][user_id].released = false;
+        }
+        return EmailController.anti_spam[instance][user_id];
+    },
     config: function () {
         return __awaiter(this, void 0, void 0, function () {
             var test, instance, config_email, from, host, username, password;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        EmailController.run_anti_spam();
                         test = true;
                         if (!global.storage || !global.storage.instance) {
                             return [2 /*return*/, false];
@@ -176,7 +218,7 @@ var EmailController = {
     },
     confirm: function (to, callback) {
         return __awaiter(this, void 0, void 0, function () {
-            var config_email, url_dashboard, user, time_validade_email, token;
+            var config_email, url_dashboard, user, anti_spam, time_validade_email, token;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -199,6 +241,12 @@ var EmailController = {
                             })];
                     case 2:
                         user = _a.sent();
+                        anti_spam = EmailController.run_anti_spam(null, user.id);
+                        if (anti_spam && !anti_spam.released) {
+                            return [2 /*return*/, callback({
+                                    released: false
+                                })];
+                        }
                         if (!user) {
                             return [2 /*return*/, express_1.response.status(400).send({
                                     error: {
@@ -228,6 +276,7 @@ var EmailController = {
                                         };
                                         return [4 /*yield*/, EmailController.transport.sendMail(mailOptions, function (error) {
                                                 if (error) {
+                                                    console.log("error", error, config_email);
                                                     callback(false);
                                                 }
                                                 else {
@@ -308,6 +357,25 @@ var EmailController = {
                                     }
                                 });
                             }); })];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    },
+    count: 0,
+    test: function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            var token;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        token = request.query.token;
+                        EmailController.count++;
+                        EmailController.config();
+                        return [2 /*return*/, response.json({ EmailController: EmailController })];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
