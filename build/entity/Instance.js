@@ -3,7 +3,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -22,6 +22,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Instance = exports.InstanceStatus = exports.TypeInstance = void 0;
 var typeorm_1 = require("typeorm");
 var User_1 = require("./User");
 var InstanceRelation_1 = require("./InstanceRelation");
@@ -63,7 +64,7 @@ var Instance = /** @class */ (function (_super) {
     ], Instance.prototype, "id", void 0);
     __decorate([
         typeorm_1.Column({
-            nullable: true
+            nullable: false
         }),
         typeorm_1.Generated("uuid"),
         __metadata("design:type", String)
@@ -99,10 +100,6 @@ var Instance = /** @class */ (function (_super) {
         }),
         __metadata("design:type", String)
     ], Instance.prototype, "description", void 0);
-    __decorate([
-        typeorm_1.Column({ type: 'jsonb', nullable: true }),
-        __metadata("design:type", Object)
-    ], Instance.prototype, "config", void 0);
     __decorate([
         typeorm_1.Column({
             type: 'enum',

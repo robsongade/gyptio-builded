@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.GioConnector = void 0;
 var User_1 = require("../entity/User");
 global._permissions = {
     check: function (module, type_permission, action) {

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.GlobalData = void 0;
 var GlobalData = /** @class */ (function () {
     function GlobalData() {
     }

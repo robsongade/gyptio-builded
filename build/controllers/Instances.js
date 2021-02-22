@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -45,6 +46,8 @@ var Auth_1 = __importDefault(require("./Auth"));
 var InstanceRelational_1 = __importDefault(require("./InstanceRelational"));
 var dns = require("dns");
 var secret = process.env.SECRET;
+var InstanceDnsTxt_1 = __importDefault(require("./InstanceDnsTxt"));
+var InstanceDnsTxt_2 = require("../entity/InstanceDnsTxt");
 exports.default = {
     all_instances: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
@@ -186,7 +189,7 @@ exports.default = {
     },
     instance: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var instance_id, instanceRepository, instance;
+            var instance_id, instanceRepository, instance, findDNSTxt, config;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -199,7 +202,27 @@ exports.default = {
                             })];
                     case 1:
                         instance = _a.sent();
-                        res.status(201).json({ message: 'Show instance', instance: instance });
+                        return [4 /*yield*/, InstanceDnsTxt_2.InstanceDnsTxt.find({
+                                where: {
+                                    instance: instance.id
+                                }
+                            })];
+                    case 2:
+                        findDNSTxt = _a.sent();
+                        if (findDNSTxt) {
+                            config = {
+                                sites: []
+                            };
+                            findDNSTxt.forEach(function (site) {
+                                config.sites.push({
+                                    url: site.domain,
+                                    status: site.status,
+                                    txt: 'domain-txt'
+                                });
+                            });
+                            instance.config = config;
+                        }
+                        res.status(201).json({ message: 'Show instance', instance: instance, findDNSTxt: findDNSTxt });
                         return [2 /*return*/];
                 }
             });
@@ -207,9 +230,9 @@ exports.default = {
     },
     edit: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var instanceRepository, _a, name, license, description, config, instance_id, data, instance, new_instance, id, instances;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var instanceRepository, _a, name, license, description, config, instance_id, data, instance, new_instance, id, configDNS, sites, _b, _c, _i, x, site, findDnstxt, instances;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         instanceRepository = typeorm_1.getRepository(Instance_1.Instance);
                         _a = req.body, name = _a.name, license = _a.license, description = _a.description, config = _a.config;
@@ -217,8 +240,7 @@ exports.default = {
                         data = {
                             name: name,
                             license: license,
-                            description: description,
-                            config: config
+                            description: description
                         };
                         return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance).findOne({
                                 where: {
@@ -226,7 +248,7 @@ exports.default = {
                                 }
                             })];
                     case 1:
-                        instance = _b.sent();
+                        instance = _d.sent();
                         if (instance) {
                             if (license && license != "") {
                                 if (instance.type == "master") {
@@ -241,9 +263,47 @@ exports.default = {
                         }
                         new_instance = instanceRepository.create(data);
                         id = instance.id;
-                        return [4 /*yield*/, instanceRepository.update(id, new_instance)];
+                        if (!config) return [3 /*break*/, 8];
+                        sites = config.sites;
+                        _b = [];
+                        for (_c in sites)
+                            _b.push(_c);
+                        _i = 0;
+                        _d.label = 2;
                     case 2:
-                        instances = _b.sent();
+                        if (!(_i < _b.length)) return [3 /*break*/, 8];
+                        x = _b[_i];
+                        site = sites[x];
+                        console.log("site", site);
+                        configDNS = {
+                            domain: site.url,
+                            status: true,
+                            dns_txt: "",
+                            instance: id,
+                        };
+                        return [4 /*yield*/, InstanceDnsTxt_2.InstanceDnsTxt.findOne({
+                                where: {
+                                    domain: site.url,
+                                    instance: id
+                                }
+                            })];
+                    case 3:
+                        findDnstxt = _d.sent();
+                        if (!!findDnstxt) return [3 /*break*/, 5];
+                        return [4 /*yield*/, InstanceDnsTxt_2.InstanceDnsTxt.save(configDNS)];
+                    case 4:
+                        _d.sent();
+                        return [3 /*break*/, 7];
+                    case 5: return [4 /*yield*/, InstanceDnsTxt_2.InstanceDnsTxt.update(findDnstxt.id, configDNS)];
+                    case 6:
+                        _d.sent();
+                        _d.label = 7;
+                    case 7:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 8: return [4 /*yield*/, instanceRepository.update(id, new_instance)];
+                    case 9:
+                        instances = _d.sent();
                         res.status(201).json({ instances: instances });
                         return [2 /*return*/];
                 }
@@ -394,7 +454,7 @@ exports.default = {
     },
     instance_origin: function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var origin, split1, domain_origin, instanceRepository, site_txt_is_active, x, new_data;
+            var origin, split1, domain_origin, instanceRepository, site_txt_is_active, new_data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -411,18 +471,13 @@ exports.default = {
                             split1 = [null, split1[0] + ":"];
                         }
                         domain_origin = split1[1].split(":")[0].split("/")[0];
-                        return [4 /*yield*/, typeorm_1.getRepository(Instance_1.Instance)
-                                .createQueryBuilder("instance")
-                                .where("instance.config::text like :url", { url: "%" + domain_origin + "%" })
-                                .getOne()];
+                        return [4 /*yield*/, InstanceDnsTxt_1.default.getConfig(domain_origin)];
                     case 1:
                         instanceRepository = _a.sent();
                         if (instanceRepository) {
                             site_txt_is_active = false;
-                            for (x = 0; x < instanceRepository.config.sites.length; x++) {
-                                if (instanceRepository.config.sites[x].url == domain_origin && instanceRepository.config.sites[x].txt && instanceRepository.config.sites[x].txt.toString() == 'true') {
-                                    site_txt_is_active = true;
-                                }
+                            if (instanceRepository.config.site.domain == domain_origin && instanceRepository.config.site.txt && instanceRepository.config.site.status) {
+                                site_txt_is_active = true;
                             }
                             if (!site_txt_is_active) {
                                 next();
@@ -430,11 +485,11 @@ exports.default = {
                             }
                             new_data = {
                                 domain: domain_origin,
-                                instance_id: instanceRepository.instance_id,
-                                id: instanceRepository.id
+                                instance_id: instanceRepository.instance.instance_id,
+                                id: instanceRepository.instance.id
                             };
                             global.storage = {
-                                instance: instanceRepository.instance_id,
+                                instance: instanceRepository.instance.instance_id,
                                 user: null,
                                 protocol: req.protocol,
                                 request: req

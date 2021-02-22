@@ -22,48 +22,52 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Characters = exports.TypeCharacters = void 0;
+exports.InstanceDnsTxt = void 0;
 var typeorm_1 = require("typeorm");
-var Character_1 = require("../Character/Character");
-var TypeCharacters;
-(function (TypeCharacters) {
-    TypeCharacters["Archer"] = "Archer";
-    TypeCharacters["Paladin"] = "Paladin";
-    TypeCharacters["Lancer"] = "Lancer";
-    TypeCharacters["Berserker"] = "Berserker";
-})(TypeCharacters = exports.TypeCharacters || (exports.TypeCharacters = {}));
-var Characters = /** @class */ (function (_super) {
-    __extends(Characters, _super);
-    function Characters() {
+var Instance_1 = require("./Instance");
+var InstanceDnsTxt = /** @class */ (function (_super) {
+    __extends(InstanceDnsTxt, _super);
+    function InstanceDnsTxt() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
         __metadata("design:type", Number)
-    ], Characters.prototype, "id", void 0);
+    ], InstanceDnsTxt.prototype, "id", void 0);
     __decorate([
         typeorm_1.Column({
-            type: 'enum',
-            enum: TypeCharacters,
-            default: TypeCharacters.Archer
+            type: 'varchar',
+            width: 30,
+            nullable: false
         }),
         __metadata("design:type", String)
-    ], Characters.prototype, "type", void 0);
+    ], InstanceDnsTxt.prototype, "domain", void 0);
     __decorate([
-        typeorm_1.OneToMany(function (data) { return Character_1.Character; }, function (data) { return data.characters; }),
-        __metadata("design:type", Array)
-    ], Characters.prototype, "character", void 0);
+        typeorm_1.Column({
+            type: 'varchar',
+            width: 255,
+            nullable: false
+        }),
+        __metadata("design:type", String)
+    ], InstanceDnsTxt.prototype, "dns_txt", void 0);
     __decorate([
-        typeorm_1.CreateDateColumn(),
-        __metadata("design:type", Date)
-    ], Characters.prototype, "created_at", void 0);
+        typeorm_1.Column({
+            type: 'boolean',
+            default: false
+        }),
+        __metadata("design:type", Boolean)
+    ], InstanceDnsTxt.prototype, "status", void 0);
     __decorate([
-        typeorm_1.UpdateDateColumn(),
-        __metadata("design:type", Date)
-    ], Characters.prototype, "updated_at", void 0);
-    Characters = __decorate([
+        typeorm_1.ManyToOne(function () { return Instance_1.Instance; }),
+        __metadata("design:type", Instance_1.Instance)
+    ], InstanceDnsTxt.prototype, "instance", void 0);
+    __decorate([
+        typeorm_1.RelationId(function (instance_dns_txt) { return instance_dns_txt.instance; }),
+        __metadata("design:type", Instance_1.Instance)
+    ], InstanceDnsTxt.prototype, "instanceId", void 0);
+    InstanceDnsTxt = __decorate([
         typeorm_1.Entity()
-    ], Characters);
-    return Characters;
+    ], InstanceDnsTxt);
+    return InstanceDnsTxt;
 }(typeorm_1.BaseEntity));
-exports.Characters = Characters;
+exports.InstanceDnsTxt = InstanceDnsTxt;

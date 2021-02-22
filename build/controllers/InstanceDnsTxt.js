@@ -35,30 +35,62 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var NetworkCron_1 = __importDefault(require("./NetworkCron"));
-var NetworkController = {
-    create: function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/];
-            });
-        });
-    },
-    config: function (request, response) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                response.status(200).json({
-                    status: false,
-                    stop: true
-                });
-                return [2 /*return*/];
-            });
-        });
+var Instance_1 = require("../entity/Instance");
+var InstanceDnsTxt_1 = require("../entity/InstanceDnsTxt");
+var InstanceDnsTxtConfig = /** @class */ (function () {
+    function InstanceDnsTxtConfig() {
     }
-};
-NetworkCron_1.default.init(1);
-exports.default = NetworkController;
+    InstanceDnsTxtConfig.prototype.init = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var config;
+            return __generator(this, function (_a) {
+                config = require("./../../sites/kl.gypt.io.js");
+                return [2 /*return*/];
+            });
+        });
+    };
+    InstanceDnsTxtConfig.prototype.getConfig = function (domain) {
+        return __awaiter(this, void 0, void 0, function () {
+            var findConfig, config, instance, _i, findConfig_1, configDNSTxt;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, InstanceDnsTxt_1.InstanceDnsTxt.find({
+                            where: {
+                                domain: domain
+                            }
+                        })];
+                    case 1:
+                        findConfig = _a.sent();
+                        if (!findConfig) return [3 /*break*/, 5];
+                        _i = 0, findConfig_1 = findConfig;
+                        _a.label = 2;
+                    case 2:
+                        if (!(_i < findConfig_1.length)) return [3 /*break*/, 5];
+                        configDNSTxt = findConfig_1[_i];
+                        return [4 /*yield*/, Instance_1.Instance.findOne(configDNSTxt.instanceId)];
+                    case 3:
+                        instance = _a.sent();
+                        console.log(configDNSTxt);
+                        config = {
+                            config: {
+                                site: {
+                                    domain: domain,
+                                    txt: 'dns-txt',
+                                    status: configDNSTxt.status
+                                }
+                            },
+                            instance: instance
+                        };
+                        _a.label = 4;
+                    case 4:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 5: return [2 /*return*/, config];
+                }
+            });
+        });
+    };
+    return InstanceDnsTxtConfig;
+}());
+exports.default = new InstanceDnsTxtConfig();

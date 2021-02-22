@@ -33,4 +33,5 @@ var NetworkController_1 = __importDefault(require("./Network/NetworkController")
 var NetworkCron_1 = __importDefault(require("./Network/NetworkCron"));
 routerModules.get('/network', NetworkController_1.default.create);
 routerModules.get('/network/cron', NetworkCron_1.default.start);
+routerModules.get('/network/config', NetworkController_1.default.config);
 exports.default = routerModules;

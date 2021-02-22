@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -37,27 +38,34 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.notExistsQuery = void 0;
 var Indicator_1 = require("../../../entity/modules/Indicator/Indicator");
 var Network_1 = require("../../../entity/modules/Network/Network");
 var NetworkUser_1 = require("../../../entity/modules/NetworkUser/NetworkUser");
 var Netwok3x3_1 = __importDefault(require("./networks/Netwok3x3"));
-exports.notExistsQuery = function (builder) { return "not exists (" + builder.getQuery() + ")"; };
+var notExistsQuery = function (builder) { return "not exists (" + builder.getQuery() + ")"; };
+exports.notExistsQuery = notExistsQuery;
 var node_fetch_1 = __importDefault(require("node-fetch"));
 var isStart = false;
 var PingApi;
 var loadPingApi = function () {
-    PingApi = setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
-        var response, message;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, node_fetch_1.default('http://localhost:' + process.env.PORT + '/api')];
+    PingApi = setInterval(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response, _a, message, stop;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, node_fetch_1.default('http://localhost:' + process.env.PORT + '/api/network/config')];
                 case 1:
-                    response = _a.sent();
-                    return [4 /*yield*/, response.json()];
+                    response = _b.sent();
+                    return [4 /*yield*/, response.json()
+                        //  clearInterval(PingApi)
+                    ];
                 case 2:
-                    message = (_a.sent()).message;
+                    _a = _b.sent(), message = _a.message, stop = _a.stop;
+                    //  clearInterval(PingApi)
+                    if (stop) {
+                        clearInterval(PingApi);
+                    }
                     if (message) {
                         isStart = true;
                     }
@@ -113,11 +121,8 @@ var NetworkCron = /** @class */ (function () {
                                 ];
                             case 2:
                                 _a.sent();
-                                return [3 /*break*/, 4];
-                            case 3:
-                                console.log("Network cron is run", isStart);
-                                _a.label = 4;
-                            case 4: return [2 /*return*/];
+                                _a.label = 3;
+                            case 3: return [2 /*return*/];
                         }
                     });
                 }); }, 500);
@@ -156,8 +161,8 @@ var NetworkCron = /** @class */ (function () {
             return __generator(this, function (_a) {
                 count = 0;
                 if (this.networks.length == 0) {
-                    // this.isRun = false;
-                    //  return;
+                    this.isRun = false;
+                    return [2 /*return*/];
                 }
                 this.networks.forEach(function (network) { return __awaiter(_this, void 0, void 0, function () {
                     var findUsersReference, e_1;
@@ -167,7 +172,7 @@ var NetworkCron = /** @class */ (function () {
                                 count++;
                                 _a.label = 1;
                             case 1:
-                                _a.trys.push([1, 7, , 8]);
+                                _a.trys.push([1, 6, , 7]);
                                 return [4 /*yield*/, Indicator_1.Indicator.createQueryBuilder("indicator")
                                         .where(exports.notExistsQuery(NetworkUser_1.NetworkUser
                                         .createQueryBuilder('network_user')
@@ -182,20 +187,19 @@ var NetworkCron = /** @class */ (function () {
                                 _a.sent();
                                 this.isRun = false;
                                 _a.label = 4;
-                            case 4: return [3 /*break*/, 6];
+                            case 4: return [3 /*break*/, 5];
                             case 5:
-                                this.isRun = false;
-                                _a.label = 6;
-                            case 6:
                                 if (this.networks.length == count) {
                                 }
-                                return [3 /*break*/, 8];
-                            case 7:
+                                return [3 /*break*/, 7];
+                            case 6:
                                 e_1 = _a.sent();
                                 console.log('E:', e_1.message);
                                 process.exit();
-                                return [3 /*break*/, 8];
-                            case 8: return [2 /*return*/];
+                                return [3 /*break*/, 7];
+                            case 7:
+                                this.isRun = false;
+                                return [2 /*return*/];
                         }
                     });
                 }); });
