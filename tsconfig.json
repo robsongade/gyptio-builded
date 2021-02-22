@@ -4,9 +4,6 @@
          "es5",
          "es6"
       ],
-      "exclude" : [
-         "./build"
-      ],
       "target": "es5",
       "module": "commonjs",
       "moduleResolution": "node",
