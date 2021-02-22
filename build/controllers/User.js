@@ -64,11 +64,12 @@ var Permission_1 = __importDefault(require("./Permission"));
 var EmailController_1 = __importDefault(require("./modules/Email/EmailController"));
 var secret = process.env.SECRET || 'secret';
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+var Indicator_1 = require("../entity/modules/Indicator/Indicator");
 var UserController = /** @class */ (function () {
     function UserController() {
         var _this = this;
         this.create = function (request, response) { return __awaiter(_this, void 0, void 0, function () {
-            var userRepository, _a, username, password, email, origin_instance, role, data, new_user, save, instance, _instanceRelation, config_email;
+            var userRepository, _a, username, password, email, origin_instance, role, data, new_user, save, instance, _instanceRelation, currentUser, indicator, config_email;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -86,7 +87,7 @@ var UserController = /** @class */ (function () {
                         return [4 /*yield*/, userRepository.save(new_user)];
                     case 1:
                         save = _b.sent();
-                        if (!origin_instance) return [3 /*break*/, 8];
+                        if (!origin_instance) return [3 /*break*/, 10];
                         return [4 /*yield*/, Instance_1.Instance.findOne(origin_instance.id)];
                     case 2:
                         instance = _b.sent();
@@ -97,11 +98,17 @@ var UserController = /** @class */ (function () {
                         };
                         return [4 /*yield*/, InstanceRelational_1.default.pin(_instanceRelation)];
                     case 3:
-                        _b.sent();
-                        return [4 /*yield*/, EmailController_1.default.config()];
+                        currentUser = _b.sent();
+                        indicator = request.body.indicator;
+                        if (!indicator) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.createIndicator(indicator, currentUser)];
                     case 4:
+                        _b.sent();
+                        _b.label = 5;
+                    case 5: return [4 /*yield*/, EmailController_1.default.config()];
+                    case 6:
                         config_email = _b.sent();
-                        if (!config_email) return [3 /*break*/, 6];
+                        if (!config_email) return [3 /*break*/, 8];
                         return [4 /*yield*/, EmailController_1.default.confirm(email, function (result) {
                                 if (result) {
                                     response.status(200).json(__assign({}, save, { success: true, goto: (result.url_dashboard) ? '/email/confirm?email=' + email : false }));
@@ -112,17 +119,17 @@ var UserController = /** @class */ (function () {
                                     });
                                 }
                             })];
-                    case 5:
+                    case 7:
                         _b.sent();
-                        return [3 /*break*/, 7];
-                    case 6:
-                        response.status(200).json(__assign({}, save, { success: true, goto: "/" }));
-                        _b.label = 7;
-                    case 7: return [3 /*break*/, 9];
+                        return [3 /*break*/, 9];
                     case 8:
-                        response.status(200).json(save);
+                        response.status(200).json(__assign({}, save, { success: true, goto: "/" }));
                         _b.label = 9;
-                    case 9: return [2 /*return*/];
+                    case 9: return [3 /*break*/, 11];
+                    case 10:
+                        response.status(200).json(save);
+                        _b.label = 11;
+                    case 11: return [2 /*return*/];
                 }
             });
         }); };
@@ -487,6 +494,40 @@ var UserController = /** @class */ (function () {
             });
         }); };
     }
+    UserController.prototype.createIndicator = function (indicator, currentUser) {
+        return __awaiter(this, void 0, void 0, function () {
+            var findIndicator, findUserInstance, createIndicator;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, User_1.User.findOne({
+                            where: {
+                                username: indicator
+                            }
+                        })];
+                    case 1:
+                        findIndicator = _a.sent();
+                        if (!findIndicator) return [3 /*break*/, 4];
+                        return [4 /*yield*/, InstanceRelation_1.InstanceRelation.findOne({
+                                where: {
+                                    user: findIndicator
+                                }
+                            })];
+                    case 2:
+                        findUserInstance = _a.sent();
+                        if (!findUserInstance) return [3 /*break*/, 4];
+                        createIndicator = Indicator_1.Indicator.create({
+                            indicatorUser: currentUser,
+                            referenceUser: findUserInstance
+                        });
+                        return [4 /*yield*/, createIndicator.save()];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
     UserController.prototype.auth_origin_instance = function (user, origin_instance) {
         return __awaiter(this, void 0, void 0, function () {
             var userRepository, find, x, relation, instance, _instanceRelation;

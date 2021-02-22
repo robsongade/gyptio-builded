@@ -22,4 +22,8 @@ routerApi.use('/api', permissionRouter_1.default);
 routerApi.use('/api', Auth_1.default.permission, Auth_1.default.authorize, moduleRouter_1.default);
 routerApi.use('/api', itemRouter_1.default);
 routerApi.use('/api', Auth_1.default.permission, Auth_1.default.authorize, routerModules_1.default);
+//Indicators
+routerApi.get('/:id', function (req, res) {
+    res.redirect("/?indicator=" + req.params.id);
+});
 exports.default = routerApi;
