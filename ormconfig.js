@@ -1,16 +1,17 @@
 const rootDir = (process.env.NODE_ENV && process.env.NODE_ENV == "production") ? 'build' : 'src'
 const ext = (process.env.NODE_ENV && process.env.NODE_ENV == "production") ? 'js' : 'ts'
 const DATABASE_URL = process.env.HOST_DATABASE_URL || process.env.DATABASE_URL;
-const config = {
-   "type": "postgres",
-   "url" : DATABASE_URL || 'postgres://postgres:root@localhost:5432/gyptio',
-   "port": process.env.PORT_DB || 5432,
-   "username": process.env.USER_DB || 'postgres',
-   "password": process.env.PASSWORD_DB || 'root',
-   "database": process.env.DB || 'gyptio',
+const logorm = (ext == 'ts') ? !!process.env.LOGORM_TS : !!process.env.LOGORM
+console.log('logorm',logorm,ext == 'ts',!!process.env.LOGORM_TS)
+module.exports = {
+   "type": process.env.DRIVE_DB || "postgres",
+   "url" : DATABASE_URL,
+   "port": process.env.PORT_DB || false,
+   "username": process.env.USER_DB || false,
+   "password": process.env.PASSWORD_DB || false,
+   "database": process.env.DB || false,
    "synchronize": process.env.AUTO_SYNC || false,
-   "host": process.env.HOST_DB || "localhost",
-   "logging": true,
+   "logging": logorm,
    "entities": [
       rootDir + "/entity/**/*."+ext
    ],
@@ -26,4 +27,3 @@ const config = {
       "subscribersDir": "src/subscriber"
    }
 }
-module.exports = config
