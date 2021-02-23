@@ -5,7 +5,7 @@ const logorm = (ext == 'ts') ? !!process.env.LOGORM_TS : !!process.env.LOGORM
 console.log('logorm',logorm,ext == 'ts',!!process.env.LOGORM_TS)
 module.exports = {
    "type": process.env.DRIVE_DB || "postgres",
-   "url" : DATABASE_URL,
+   "url" : process.env.DRIVE_DB != "mysql" ? DATABASE_URL : false,
    "port": process.env.PORT_DB || false,
    "username": process.env.USER_DB || false,
    "password": process.env.PASSWORD_DB || false,
