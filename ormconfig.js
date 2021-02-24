@@ -2,7 +2,6 @@ const rootDir = (process.env.NODE_ENV && process.env.NODE_ENV == "production") ?
 const ext = (process.env.NODE_ENV && process.env.NODE_ENV == "production") ? 'js' : 'ts'
 const DATABASE_URL = process.env.HOST_DATABASE_URL || process.env.DATABASE_URL;
 const logorm = (ext == 'ts') ? !!process.env.LOGORM_TS : !!process.env.LOGORM
-console.log('logorm',logorm,ext == 'ts',!!process.env.LOGORM_TS)
 module.exports = {
    "type": process.env.DRIVE_DB || "postgres",
    "url" : process.env.DRIVE_DB != "mysql" ? DATABASE_URL : false,
