@@ -21,10 +21,10 @@ var ChatServer = /** @class */ (function () {
         this.port = process.env.SOCKET_PORT || ChatServer.PORT;
     };
     ChatServer.prototype.listen = function () {
-        var _this = this;
-        this.server.listen(this.port, function () {
-            console.log('Running server on port %s', _this.port);
+        /*this.server.listen(this.port, () => {
+          console.log('Running server on port %s', this.port);
         });
+        */
     };
     ChatServer.prototype.getApp = function () {
         return this.app;

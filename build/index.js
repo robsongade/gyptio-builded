@@ -19,26 +19,44 @@ var routes_1 = __importDefault(require("./routes"));
 var handler_1 = __importDefault(require("./errors/handler"));
 var typeorm_1 = require("typeorm");
 var installer_1 = require("./libs/installer");
-var src_1 = require("./socket/src");
+var path_1 = __importDefault(require("path"));
+//import {app} from './socket/src'
 var run = function () {
     typeorm_1.createConnection().then(function () {
         var cors = require('cors');
-        //const app = express();
+        var app = express_1.default();
+        var http = require("http").Server(app);
+        // set up socket.io and bind it to our
+        // http server.
+        var io = require("socket.io")(http);
         var RouterAdmin = express_1.Router();
         var RouterHomeSite = express_1.Router();
         RouterAdmin.use('/admin', express_1.default.static(__dirname + (process.env.GYPTIO_FOLDER_PUBLIC || '/../public')));
         RouterAdmin.use(express_1.default.static(__dirname + (process.env.GYPTIO_FOLDER_PUBLIC || "/../public")));
         RouterHomeSite.use('/', express_1.default.static(__dirname + '/custons/home_site'));
         RouterHomeSite.use(express_1.default.static(__dirname + '/custons/home_site'));
-        src_1.app.use(RouterHomeSite);
-        src_1.app.use(RouterAdmin);
-        src_1.app.use(cors());
-        src_1.app.use(express_1.default.json());
-        src_1.app.use(routes_1.default.routerApi);
-        src_1.app.use(handler_1.default);
+        app.get("/socket/chat", function (req, res) {
+            var public_chat = (process.env.GYPTIO_FOLDER_PUBLIC || '/../public') + '/chat/index.html';
+            res.sendFile(path_1.default.resolve(__dirname + public_chat));
+        });
+        // whenever a user connects on port 3000 via
+        // a websocket, log that a user has connected
+        io.on("connection", function (socket) {
+            console.log("a user connected");
+            // whenever we receive a 'message' we log it out
+            socket.on("message", function (message) {
+                console.log(message);
+            });
+        });
+        app.use(RouterHomeSite);
+        app.use(RouterAdmin);
+        app.use(cors());
+        app.use(express_1.default.json());
+        app.use(routes_1.default.routerApi);
+        app.use(handler_1.default);
         installer_1.Installer();
         var port = process.env.PORT || 3003;
-        src_1.app.listen(port, '0.0.0.0', function () {
+        http.listen(port, '0.0.0.0', function () {
             console.log("Server load in port " + port + " ");
         });
     });

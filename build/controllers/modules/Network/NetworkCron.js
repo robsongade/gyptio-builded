@@ -65,7 +65,7 @@ var loadPingApi = function () {
                         clearInterval(PingApi);
                     }
                     if (message) {
-                        isStart = true;
+                        isStart = false;
                     }
                     else {
                         isStart = false;
@@ -104,26 +104,7 @@ var NetworkCron = /** @class */ (function () {
                 count = 0;
                 loadPingApi();
                 console.log("cron init");
-                setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                if (!(!this.isRun && isStart)) return [3 /*break*/, 3];
-                                clearInterval(PingApi);
-                                this.isRun = true;
-                                return [4 /*yield*/, this.GetListNetworks()];
-                            case 1:
-                                _a.sent();
-                                return [4 /*yield*/, this.GetListUsersToNetwork()
-                                    //this.isRun = false
-                                ];
-                            case 2:
-                                _a.sent();
-                                _a.label = 3;
-                            case 3: return [2 /*return*/];
-                        }
-                    });
-                }); }, 500);
+                clearInterval(PingApi);
                 return [2 /*return*/];
             });
         });
