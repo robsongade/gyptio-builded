@@ -26,7 +26,7 @@ var run = function () {
         //const app = express();
         var RouterAdmin = express_1.Router();
         var RouterHomeSite = express_1.Router();
-        RouterAdmin.use('/admin', express_1.default.static(__dirname + (process.env.GYPTIO_FOLDER_PUBLIC || __dirname + '/../public')));
+        RouterAdmin.use('/admin', express_1.default.static(__dirname + (process.env.GYPTIO_FOLDER_PUBLIC || '/../public')));
         RouterAdmin.use(express_1.default.static(__dirname + (process.env.GYPTIO_FOLDER_PUBLIC || "/../public")));
         RouterHomeSite.use('/', express_1.default.static(__dirname + '/custons/home_site'));
         RouterHomeSite.use(express_1.default.static(__dirname + '/custons/home_site'));

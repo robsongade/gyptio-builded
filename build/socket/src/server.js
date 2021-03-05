@@ -15,7 +15,8 @@ var ChatServer = /** @class */ (function () {
     }
     ChatServer.prototype.initial = function () {
         this.app = express_1.default();
-        this.app.use('/chat', express_1.default.static('./public/chat'));
+        var public_chat = (process.env.GYPTIO_FOLDER_PUBLIC || __dirname + '/../../../public') + '/chat';
+        this.app.use('/chat', express_1.default.static(public_chat));
         this.server = http_1.createServer(this.app);
         this.port = process.env.SOCKET_PORT || ChatServer.PORT;
     };
