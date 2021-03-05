@@ -13,6 +13,10 @@ var Instances_1 = __importDefault(require("./controllers/Instances"));
 var Auth_1 = __importDefault(require("./controllers/Auth"));
 var itemRouter_1 = __importDefault(require("./routes/itemRouter"));
 var routerModules_1 = __importDefault(require("./controllers/modules/routerModules"));
+var routerSocket = express_1.Router();
+routerSocket.get("/socket/client", function (req, res) {
+    res.sendFile(__dirname + "/socket/index.html");
+});
 var routerApi = express_1.Router();
 routerApi.use(Instances_1.default.instance_origin);
 routerApi.use('/api', userRouter_1.default);
@@ -23,7 +27,10 @@ routerApi.use('/api', Auth_1.default.permission, Auth_1.default.authorize, modul
 routerApi.use('/api', itemRouter_1.default);
 routerApi.use('/api', Auth_1.default.permission, Auth_1.default.authorize, routerModules_1.default);
 //Indicators
-routerApi.get('/:id', function (req, res) {
-    res.redirect("/?indicator=" + req.params.id);
+routerApi.get('/a/:id', function (req, res) {
+    //res.redirect("/?indicator="+req.params.id)
 });
-exports.default = routerApi;
+exports.default = {
+    routerApi: routerApi,
+    routerSocket: routerSocket
+};

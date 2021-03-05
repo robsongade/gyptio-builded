@@ -11,11 +11,10 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -46,6 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var Instance_1 = require("../entity/Instance");
@@ -85,7 +85,7 @@ var set_request = function (request) {
 var check_permission = function (module, type_permission, action, OrOwner) {
     if (action === void 0) { action = false; }
     if (OrOwner === void 0) { OrOwner = false; }
-    return __awaiter(void 0, void 0, void 0, function () {
+    return __awaiter(_this, void 0, void 0, function () {
         var check, _a, instance, user, findInstance;
         return __generator(this, function (_b) {
             switch (_b.label) {
@@ -234,7 +234,7 @@ var PermissionController = /** @class */ (function () {
                         data_response_group = !id ? {
                             groups: group
                         } : { group: group };
-                        response.status(200).json(__assign(__assign({}, data_response_group), { modules: modules }));
+                        response.status(200).json(__assign({}, data_response_group, { modules: modules }));
                         return [2 /*return*/];
                 }
             });
