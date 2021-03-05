@@ -11,7 +11,7 @@ function connectRoom() {
   }
 
   var channel = $('#channel').val();
-  socket = io('http://127.0.0.1:4040', {
+  socket = io({
     query: 'ch=' + channel,
     resource: 'socket.io'
   });
