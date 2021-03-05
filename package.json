@@ -39,9 +39,9 @@
       "uuid": "^8.3.2"
    },
    "scripts": {
-      "pre__start": "tsc",
+      "gio:pre__start": "tsc",
       "dev": "ts-node-dev --transpile-only --ignore-watch node_modules src/index.ts",
-      "build": "tsc",
+      "gio:build": "tsc",
       "start": "node build/index.js",
       "gio:cleardb": "ts-node-dev ./src/libs/hackers/clear_db.ts",
       "gio:clearrun": "ts-node-dev ./src/libs/hackers/clear_db.ts && npm run dev",
