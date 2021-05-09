@@ -144,14 +144,40 @@ var NetworkCronController = /** @class */ (function () {
             });
         });
     };
+    NetworkCronController.prototype.PingApiOJogo = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, node_fetch_1.default('http://localhost:' + process.env.PORT + '/api/ojogo')];
+                    case 1:
+                        response = _a.sent();
+                        return [4 /*yield*/, response.json()];
+                    case 2:
+                        data = _a.sent();
+                        console.log('data', data);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     NetworkCronController.prototype.startCron = function (req, res) {
         if (req === void 0) { req = null; }
         if (res === void 0) { res = null; }
         return __awaiter(this, void 0, void 0, function () {
             var status;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [2 /*return*/];
+                    case 0:
+                        NetworkCron.PingApiOJogo();
+                        setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                NetworkCron.PingApiOJogo();
+                                return [2 /*return*/];
+                            });
+                        }); }, 60000 * 5);
+                        return [2 /*return*/];
                     case 1:
                         _a.sent();
                         _a.label = 2;
