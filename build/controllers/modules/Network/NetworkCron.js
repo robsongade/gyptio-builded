@@ -151,11 +151,7 @@ var NetworkCronController = /** @class */ (function () {
             var status;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        if (!!NetworkCron.isStart) return [3 /*break*/, 2];
-                        status = true;
-                        NetworkCron.isStart = true;
-                        return [4 /*yield*/, NetworkCron.init()];
+                    case 0: return [2 /*return*/];
                     case 1:
                         _a.sent();
                         _a.label = 2;
