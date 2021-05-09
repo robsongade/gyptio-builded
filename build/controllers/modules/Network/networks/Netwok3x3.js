@@ -386,10 +386,19 @@ var Network3x3 = /** @class */ (function () {
                                 currentUser: currentUser,
                                 referenceUser: referenceUser,
                                 network: network
-                            }).save()];
+                            }).save()
+                            // process.exit()
+                            /*
+                            
+                                    let {count} = await NetworkUser
+                                    .createQueryBuilder("network_user")
+                                    .select("COUNT(network_user)", "count")
+                                    .where("status != 'COMPLETED' and network_user.referenceUser = "+referenceUser.id)
+                                    .getRawOne();
+                                  */
+                        ];
                     case 3:
                         save = _a.sent();
-                        process.exit();
                         if (!(count >= this.amountByNivel)) return [3 /*break*/, 6];
                         return [4 /*yield*/, NetworkUser_1.NetworkUser.findOne({
                                 where: {

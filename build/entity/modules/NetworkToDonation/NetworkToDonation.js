@@ -22,80 +22,61 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var InstanceRelation_1 = require("./../../InstanceRelation");
 var typeorm_1 = require("typeorm");
 var Network_1 = require("../Network/Network");
-var InstanceRelation_1 = require("../../InstanceRelation");
-var NetworkUserStatus;
-(function (NetworkUserStatus) {
-    NetworkUserStatus["pendent"] = "PENDENTE";
-    NetworkUserStatus["completed"] = "COMPLETO";
-})(NetworkUserStatus = exports.NetworkUserStatus || (exports.NetworkUserStatus = {}));
-var NetworkUser = /** @class */ (function (_super) {
-    __extends(NetworkUser, _super);
-    function NetworkUser() {
+var NetworkToDonation = /** @class */ (function (_super) {
+    __extends(NetworkToDonation, _super);
+    function NetworkToDonation() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     __decorate([
         typeorm_1.PrimaryGeneratedColumn(),
         __metadata("design:type", Number)
-    ], NetworkUser.prototype, "id", void 0);
+    ], NetworkToDonation.prototype, "id", void 0);
     __decorate([
         typeorm_1.ManyToOne(function () { return Network_1.Network; }),
         __metadata("design:type", Network_1.Network)
-    ], NetworkUser.prototype, "network", void 0);
+    ], NetworkToDonation.prototype, "network", void 0);
     __decorate([
         typeorm_1.RelationId(function (network_user) { return network_user.network; }),
         __metadata("design:type", Network_1.Network)
-    ], NetworkUser.prototype, "networkId", void 0);
+    ], NetworkToDonation.prototype, "networkId", void 0);
     __decorate([
         typeorm_1.ManyToOne(function () { return InstanceRelation_1.InstanceRelation; }),
         __metadata("design:type", InstanceRelation_1.InstanceRelation)
-    ], NetworkUser.prototype, "currentUser", void 0);
+    ], NetworkToDonation.prototype, "currentUser", void 0);
     __decorate([
         typeorm_1.RelationId(function (network_user) { return network_user.currentUser; }),
         __metadata("design:type", InstanceRelation_1.InstanceRelation)
-    ], NetworkUser.prototype, "currentUserId", void 0);
+    ], NetworkToDonation.prototype, "currentUserId", void 0);
     __decorate([
         typeorm_1.ManyToOne(function () { return InstanceRelation_1.InstanceRelation; }),
         __metadata("design:type", InstanceRelation_1.InstanceRelation)
-    ], NetworkUser.prototype, "referenceUser", void 0);
+    ], NetworkToDonation.prototype, "referenceUser", void 0);
     __decorate([
         typeorm_1.RelationId(function (network_user) { return network_user.referenceUser; }),
         __metadata("design:type", InstanceRelation_1.InstanceRelation)
-    ], NetworkUser.prototype, "referenceUserId", void 0);
+    ], NetworkToDonation.prototype, "referenceUserId", void 0);
     __decorate([
         typeorm_1.Column({
             type: 'int',
             default: 0,
         }),
         __metadata("design:type", Number)
-    ], NetworkUser.prototype, "nivel", void 0);
+    ], NetworkToDonation.prototype, "nivel", void 0);
     __decorate([
-        typeorm_1.Column({
-            type: 'int',
-            default: 0,
-        }),
-        __metadata("design:type", Number)
-    ], NetworkUser.prototype, "nivel_global", void 0);
+        typeorm_1.CreateDateColumn(),
+        __metadata("design:type", Date)
+    ], NetworkToDonation.prototype, "created_at", void 0);
     __decorate([
-        typeorm_1.Column({
-            type: 'boolean',
-            default: false
-        }),
-        __metadata("design:type", Boolean)
-    ], NetworkUser.prototype, "active", void 0);
-    __decorate([
-        typeorm_1.Column({
-            type: 'enum',
-            enum: NetworkUserStatus,
-            default: NetworkUserStatus.pendent
-        }),
-        __metadata("design:type", String)
-    ], NetworkUser.prototype, "status", void 0);
-    NetworkUser = __decorate([
+        typeorm_1.UpdateDateColumn(),
+        __metadata("design:type", Date)
+    ], NetworkToDonation.prototype, "updated_at", void 0);
+    NetworkToDonation = __decorate([
         typeorm_1.Entity(),
-        typeorm_1.Unique("index_network_user", ["network", "currentUser", "referenceUser"])
-    ], NetworkUser);
-    return NetworkUser;
+        typeorm_1.Unique("index_network_user", ["nivel", "currentUser"])
+    ], NetworkToDonation);
+    return NetworkToDonation;
 }(typeorm_1.BaseEntity));
-exports.NetworkUser = NetworkUser;
+exports.NetworkToDonation = NetworkToDonation;

@@ -35,25 +35,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var NetworkController = {
-    create: function () {
+var ExtractDataUrl_1 = require("../../../libs/ExtractDataUrl");
+exports.default = {
+    resultado: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/];
-            });
-        });
-    },
-    config: function (request, response) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                response.status(200).json({
-                    status: false,
-                    stop: true
-                });
-                return [2 /*return*/];
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _b = (_a = res.status(200)).json;
+                        return [4 /*yield*/, ExtractDataUrl_1.extractDataUrl.ojogodobicho_com()];
+                    case 1: return [2 /*return*/, _b.apply(_a, [_c.sent()])];
+                }
             });
         });
     }
 };
-//NetworkCron.init(1)
-exports.default = NetworkController;

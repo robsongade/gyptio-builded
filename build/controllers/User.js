@@ -57,6 +57,7 @@ var InstanceRelation_1 = require("../entity/InstanceRelation");
 var InstanceRelational_1 = __importDefault(require("./InstanceRelational"));
 var InstanceEntity = Instance_1.Instance;
 //const UserRoles = User.Enum.UserRoles
+var NetworkCron_1 = __importDefault(require("./modules/Network/NetworkCron"));
 var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var Group_1 = require("../entity/Group");
 var InstanceRelationGroup_1 = require("../entity/InstanceRelationGroup");
@@ -108,6 +109,7 @@ var UserController = /** @class */ (function () {
                     case 5: return [4 /*yield*/, EmailController_1.default.config()];
                     case 6:
                         config_email = _b.sent();
+                        NetworkCron_1.default.startCron();
                         if (!config_email) return [3 /*break*/, 8];
                         return [4 /*yield*/, EmailController_1.default.confirm(email, function (result) {
                                 if (result) {

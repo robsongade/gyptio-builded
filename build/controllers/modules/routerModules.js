@@ -32,6 +32,29 @@ routerModules.get('/email/test', EmailController_1.default.test);
 var NetworkController_1 = __importDefault(require("./Network/NetworkController"));
 var NetworkCron_1 = __importDefault(require("./Network/NetworkCron"));
 routerModules.get('/network', NetworkController_1.default.create);
-routerModules.get('/network/cron', NetworkCron_1.default.start);
+routerModules.get('/network/test/to', NetworkCron_1.default.test_check_users_to_donation);
+//routerModules.get('/network/cron',new NetworkCron().start)
 routerModules.get('/network/config', NetworkController_1.default.config);
+//Comprovantes
+var multer_1 = __importDefault(require("multer"));
+var uuid_1 = require("uuid");
+var path_1 = __importDefault(require("path"));
+var ComprovanteController_1 = require("./Comprovante/ComprovanteController");
+var comprovante = new ComprovanteController_1.ComprovanteController();
+routerModules.get('/comprovante/all', comprovante.all);
+routerModules.get('/comprovante/dados/:id', comprovante.dados);
+var storage = multer_1.default.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'upload/');
+    },
+    filename: function (req, file, cb) {
+        var id = req.params.id;
+        cb(null, id + '-' + uuid_1.v4() + path_1.default.extname(file.originalname));
+    },
+});
+var upload = multer_1.default({
+    storage: storage
+});
+routerModules.post('/comprovante/imagem/:id', upload.single('arquivo'), comprovante.upload);
+routerModules.post('/comprovante/criar-por-id-upline/:id', comprovante.create_por_upline);
 exports.default = routerModules;

@@ -18,6 +18,9 @@ userRouter.use('/register', recaptcha.middleware.verify, function (req, res, nex
         next();
     }
     else {
+        if (process.env.CY_TEST) {
+            return next();
+        }
         return res.send({ error: { message: "recaptcha error" } });
     }
 });

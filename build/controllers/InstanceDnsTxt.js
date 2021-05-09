@@ -68,7 +68,6 @@ var InstanceDnsTxtConfig = /** @class */ (function () {
                         return [4 /*yield*/, Instance_1.Instance.findOne(configDNSTxt.instanceId)];
                     case 3:
                         instance = _a.sent();
-                        console.log(configDNSTxt);
                         config = {
                             config: {
                                 site: {
