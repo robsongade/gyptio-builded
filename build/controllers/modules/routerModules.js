@@ -36,25 +36,32 @@ routerModules.get('/network/test/to', NetworkCron_1.default.test_check_users_to_
 //routerModules.get('/network/cron',new NetworkCron().start)
 routerModules.get('/network/config', NetworkController_1.default.config);
 //Comprovantes
-var multer_1 = __importDefault(require("multer"));
-var uuid_1 = require("uuid");
-var path_1 = __importDefault(require("path"));
-var ComprovanteController_1 = require("./Comprovante/ComprovanteController");
-var comprovante = new ComprovanteController_1.ComprovanteController();
-routerModules.get('/comprovante/all', comprovante.all);
-routerModules.get('/comprovante/dados/:id', comprovante.dados);
-var storage = multer_1.default.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'upload/');
+//import multer from 'multer'
+/*
+import {v4}  from 'uuid'
+
+import path  from 'path'
+import {ComprovanteController} from './Comprovante/ComprovanteController'
+const comprovante = new ComprovanteController()
+routerModules.get('/comprovante/all',comprovante.all)
+routerModules.get('/comprovante/dados/:id',comprovante.dados)
+
+const storage = multer.diskStorage({
+    destination : (req,file,cb) => {
+        cb(null,'upload/')
     },
-    filename: function (req, file, cb) {
-        var id = req.params.id;
-        cb(null, id + '-' + uuid_1.v4() + path_1.default.extname(file.originalname));
+    filename  : (req,file,cb) => {
+        const {id} = req.params
+        
+        cb(null,id + '-' + v4()+  path.extname(file.originalname))
     },
-});
-var upload = multer_1.default({
-    storage: storage
-});
-routerModules.post('/comprovante/imagem/:id', upload.single('arquivo'), comprovante.upload);
-routerModules.post('/comprovante/criar-por-id-upline/:id', comprovante.create_por_upline);
+})
+const upload = multer({
+    storage
+})
+
+
+routerModules.post('/comprovante/imagem/:id',upload.single('arquivo'),comprovante.upload)
+routerModules.post('/comprovante/criar-por-id-upline/:id',comprovante.create_por_upline)
+*/
 exports.default = routerModules;

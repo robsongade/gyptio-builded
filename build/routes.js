@@ -35,7 +35,7 @@ routerApi.get('/:id', function (req, res) {
 });
 var ComprovanteController_1 = require("./controllers/modules/Comprovante/ComprovanteController");
 var comprovante = new ComprovanteController_1.ComprovanteController();
-routerApi.get('/comprovante/imagem/:imagem', comprovante.show);
+//routerApi.get('/comprovante/imagem/:imagem',comprovante.show)
 routerApi.use('/cron/start', NetworkCron_1.default.startCron);
 exports.default = {
     routerApi: routerApi,
