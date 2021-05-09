@@ -75,7 +75,7 @@ var NetworkToDonation = /** @class */ (function (_super) {
     ], NetworkToDonation.prototype, "updated_at", void 0);
     NetworkToDonation = __decorate([
         typeorm_1.Entity(),
-        typeorm_1.Unique("index_network_user", ["nivel", "currentUser"])
+        typeorm_1.Unique("index_NetworkToDonation", ["nivel", "currentUser"])
     ], NetworkToDonation);
     return NetworkToDonation;
 }(typeorm_1.BaseEntity));
