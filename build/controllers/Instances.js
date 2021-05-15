@@ -47,6 +47,7 @@ var dns = require("dns");
 var secret = process.env.SECRET;
 var InstanceDnsTxt_1 = __importDefault(require("./InstanceDnsTxt"));
 var InstanceDnsTxt_2 = require("../entity/InstanceDnsTxt");
+var PluguinsAuthentication_1 = require("./modules/PluginsAuhentication/PluguinsAuthentication");
 exports.default = {
     all_instances: function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
@@ -109,7 +110,8 @@ exports.default = {
                     case 1:
                         instances_relational = _a.sent();
                         res.status(201).json({
-                            instances: instances_relational
+                            instances: instances_relational,
+                            autentica_com: new PluguinsAuthentication_1.PluguinsAuthentication().init()
                         });
                         return [3 /*break*/, 3];
                     case 2:

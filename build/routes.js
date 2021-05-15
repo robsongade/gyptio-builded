@@ -21,7 +21,9 @@ routerSocket.get("/socket/client", function (req, res) {
 var routerApi = express_1.Router();
 var OJogoDoBichoController_1 = __importDefault(require("./controllers/modules/OJogoDoBicho/OJogoDoBichoController"));
 routerApi.use('/api/ojogo', OJogoDoBichoController_1.default.resultado);
-routerApi.use('/api/jogo/dia', OJogoDoBichoController_1.default.dia);
+routerApi.use('/api', OJogoDoBichoController_1.default.auth);
+routerApi.get('/api/jogo/dia', OJogoDoBichoController_1.default.dia);
+routerApi.get('/api/jogo/auth', OJogoDoBichoController_1.default.auth_render);
 routerApi.use(Instances_1.default.instance_origin);
 routerApi.use('/api', userRouter_1.default);
 routerApi.use('/api', authRouter_1.default);

@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var OJogoDoBicho_1 = require("../../../entity/modules/OJogoDoBicho/OJogoDoBicho");
 var ExtractDataUrl_1 = require("../../../libs/ExtractDataUrl");
+var PluguinsAuthentication_1 = require("../PluginsAuhentication/PluguinsAuthentication");
 var ojogo = {
     pupular_na_base: function (dados) {
         return __awaiter(this, void 0, void 0, function () {
@@ -150,6 +151,42 @@ var ojogo = {
                                 resultado_dia: resultado_dia
                             })];
                 }
+            });
+        });
+    },
+    auth_render: function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                res.sendFile(__dirname + '/plugin/auth_render.html');
+                return [2 /*return*/];
+            });
+        });
+    },
+    auth: function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var plugin_auth;
+            return __generator(this, function (_a) {
+                if (!process.env.AUTH_PLUGIN) {
+                    next();
+                    return [2 /*return*/];
+                }
+                plugin_auth = new PluguinsAuthentication_1.PluguinsAuthentication();
+                if (req.path != "/jogo/auth" && !plugin_auth.auth(req)) {
+                    return [2 /*return*/, res.json({
+                            redirect: '/jogo/auth'
+                        })];
+                }
+                if (req.path == "/jogo/auth") {
+                    if (plugin_auth.auth(req)) {
+                        return [2 /*return*/, res.json({
+                                redirect: '/'
+                            })];
+                    }
+                }
+                if (req.path == "/jogo/auth") {
+                    ojogo.auth_render(req, res);
+                }
+                return [2 /*return*/];
             });
         });
     }

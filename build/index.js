@@ -64,18 +64,21 @@ var run = function () {
     typeorm_1.createConnection().then(function () {
         var cors = require('cors');
         var app = express_1.default();
+        app.use(cors({
+            origin: '*'
+        }));
         var http = require("http").Server(app);
         // set up socket.io and bind it to our
         // http server.
         var io = require("socket.io")(http);
         var RouterAdmin = express_1.Router();
         var RouterHomeSite = express_1.Router();
-        RouterAdmin.use('/admin', express_1.default.static(__dirname + (process.env.GYPTIO_FOLDER_PUBLIC || '/../public')));
+        RouterAdmin.use('/admin', express_1.default.static(__dirname + (process.env.GYPTIO_FOLDER_PUBLIC || __dirname + '/../appdobicho-build/build/public')));
         RouterAdmin.use(express_1.default.static(__dirname + (process.env.GYPTIO_FOLDER_PUBLIC || "/../public")));
         RouterHomeSite.use('/', express_1.default.static(__dirname + '/custons/home_site'));
         RouterHomeSite.use(express_1.default.static(__dirname + '/custons/home_site'));
         var proxy = require('express-http-proxy');
-        app.use('/admin', proxy('http://localhost:15003'));
+        //app.use('/admin', proxy('http://localhost:15003'));
         app.get("/socket/chat", function (req, res) {
             var public_chat = (process.env.GYPTIO_FOLDER_PUBLIC || '/../public') + '/chat/index.html';
             res.sendFile(path_1.default.resolve(__dirname + public_chat));
@@ -91,7 +94,7 @@ var run = function () {
         });
         app.use(RouterHomeSite);
         app.use(RouterAdmin);
-        app.use(cors());
+        //  app.use(cors())
         app.use(express_1.default.json());
         app.use(routes_1.default.routerApi);
         app.use(handler_1.default);
