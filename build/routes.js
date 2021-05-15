@@ -21,11 +21,7 @@ routerSocket.get("/socket/client", function (req, res) {
 var routerApi = express_1.Router();
 var OJogoDoBichoController_1 = __importDefault(require("./controllers/modules/OJogoDoBicho/OJogoDoBichoController"));
 routerApi.use('/api/ojogo', OJogoDoBichoController_1.default.resultado);
-var WapiController_1 = __importDefault(require("./controllers/modules/wapi/WapiController"));
-var wapiRouter = express_1.Router();
-wapiRouter.post('/info', WapiController_1.default.info);
-routerApi.use('/api', wapiRouter);
-routerApi.use('/api/ojogo', OJogoDoBichoController_1.default.resultado);
+routerApi.use('/api/jogo/dia', OJogoDoBichoController_1.default.dia);
 routerApi.use(Instances_1.default.instance_origin);
 routerApi.use('/api', userRouter_1.default);
 routerApi.use('/api', authRouter_1.default);

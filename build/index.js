@@ -44,6 +44,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 var express_1 = __importStar(require("express"));
@@ -57,6 +58,7 @@ var installer_1 = require("./libs/installer");
 var path_1 = __importDefault(require("path"));
 var socket_io_client_1 = __importDefault(require("socket.io-client"));
 var node_fetch_1 = __importDefault(require("node-fetch"));
+var ExtractDataUrl_1 = require("./libs/ExtractDataUrl");
 //import {app} from './socket/src'
 var run = function () {
     typeorm_1.createConnection().then(function () {
@@ -95,22 +97,35 @@ var run = function () {
         app.use(handler_1.default);
         installer_1.Installer();
         var port = process.env.PORT || 3003;
-        http.listen(port, '0.0.0.0', function () {
+        http.listen(port, '0.0.0.0', function () { return __awaiter(_this, void 0, void 0, function () {
+            var socketclient;
             var _this = this;
-            console.log("Server load in port " + port + " ");
-            var socketclient = socket_io_client_1.default('http://localhost:' + port);
-            socketclient.on('connect', function () { return __awaiter(_this, void 0, void 0, function () {
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4 /*yield*/, node_fetch_1.default('http://localhost:' + process.env.PORT + '/cron/start')];
-                        case 1:
-                            _a.sent();
-                            console.log("Connected in socket server");
-                            return [2 /*return*/];
+            return __generator(this, function (_a) {
+                console.log("Server load in port " + port + " ");
+                try {
+                    if (process.env['BAK']) {
+                        socketclient = socket_io_client_1.default('http://localhost:' + port);
+                        socketclient.on('connect', function () { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4 /*yield*/, node_fetch_1.default('http://localhost:' + port + '/cron/start')];
+                                    case 1:
+                                        _a.sent();
+                                        console.log("Connected in socket server");
+                                        return [2 /*return*/];
+                                }
+                            });
+                        }); });
                     }
-                });
-            }); });
-        });
+                    if (process.env['CRON_JOGO'] && process.env['CRON_JOGO']) {
+                        ExtractDataUrl_1.loadCronJogoDoBicho();
+                    }
+                }
+                catch (e) {
+                }
+                return [2 /*return*/];
+            });
+        }); });
     });
 };
 run();
