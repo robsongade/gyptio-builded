@@ -290,7 +290,7 @@ exports.loadCronJogoDoBicho = function () { return __awaiter(_this, void 0, void
                                 return [4 /*yield*/, loadCron()];
                             case 1:
                                 _a.sent();
-                                loadAnterior = false;
+                                loadAnterior = true;
                                 _a.label = 2;
                             case 2: return [2 /*return*/];
                         }
